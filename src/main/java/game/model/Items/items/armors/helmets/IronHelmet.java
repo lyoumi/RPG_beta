@@ -6,6 +6,7 @@ import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.armors.Armor;
 import game.model.abilities.Magic;
 import game.model.abilities.buffs.buffs.ArchersBuff;
+import game.model.abilities.buffs.buffs.ArmorBuff;
 
 import java.util.Random;
 
@@ -27,7 +28,7 @@ public class IronHelmet implements Armor{
         this.itemLevel = random.nextInt(human.getLevel() + 1);
         this.price = 100*getItemLevel();
         this.defence = getItemLevel() * 10 + 5;
-        this.magic = ArchersBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.magic = ArmorBuff.magicFactory.getMagicFactory(getItemLevel());
     }
 
     @Override
