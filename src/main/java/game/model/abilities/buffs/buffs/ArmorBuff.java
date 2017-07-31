@@ -40,7 +40,11 @@ public class ArmorBuff implements BuffMagic {
 
     @Override
     public MagicClasses getMagicClass() {
-        return null;
+        return MagicClasses.BUFF;
+    }
+
+    public String toString(){
+        return ArmorBuff.class.getSimpleName() + ": " + getEffect();
     }
 
     public static MagicFactory magicFactory = ArmorBuff::new;

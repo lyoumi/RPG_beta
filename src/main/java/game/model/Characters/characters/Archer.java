@@ -129,7 +129,7 @@ public class Archer implements Human, UsingItems, Equipment{
     }
 
     private int getSummaryAdditionParam(BuffClasses buffClass){
-        int summaryAddtitionParam = 0;
+        int summaryAdditionParam = 0;
         if(!Objects.equals(equipmentItems, null)){
             for (Map.Entry<EquipmentItems, Item> entry : equipmentItems.entrySet()) {
                 if (!Objects.equals(entry.getValue().getBuff(), null)){
@@ -137,12 +137,12 @@ public class Archer implements Human, UsingItems, Equipment{
                         magic = entry.getValue().getBuff();
                         BuffMagic magic = (BuffMagic) this.magic;
                         if (magic.getEffect().containsKey(buffClass))
-                            summaryAddtitionParam += magic.getEffect().get(buffClass);
+                            summaryAdditionParam += magic.getEffect().get(buffClass);
                     }
                 }
             }
         }
-        return summaryAddtitionParam;
+        return summaryAdditionParam;
     }
 
     private void updateStats(){
