@@ -7,12 +7,12 @@ import game.model.Items.items.Item;
 import game.model.Items.items.armors.armors.IronChest;
 import game.model.Items.items.armors.boots.IronBoots;
 import game.model.Items.items.armors.helmets.IronHelmet;
-import game.model.Items.items.heal.healHitPoint.BigHPBottle;
-import game.model.Items.items.heal.healHitPoint.MiddleHPBottle;
-import game.model.Items.items.heal.healHitPoint.SmallHPBottle;
-import game.model.Items.items.heal.healManaPoint.BigFlower;
-import game.model.Items.items.heal.healManaPoint.MiddleFlower;
-import game.model.Items.items.heal.healManaPoint.SmallFlower;
+import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.MiddleHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.SmallHPBottle;
+import game.model.Items.items.heal.healManaPoint.items.BigFlower;
+import game.model.Items.items.heal.healManaPoint.items.MiddleFlower;
+import game.model.Items.items.heal.healManaPoint.items.SmallFlower;
 import game.model.Items.items.weapons.weapons.Bow;
 import game.model.Items.items.weapons.weapons.LegendaryArcherBow;
 import game.model.Items.items.weapons.weapons.Sword;
@@ -45,15 +45,16 @@ public class SimpleMonsterEquipment implements MonsterEquipment {
 
     public List<HealingItems> initializeItemList(){
         List<HealingItems> itemsList = new ArrayList<>();
-        itemsList.add(BigHPBottle.healingItemsFactory.getHealingItem());
-        itemsList.add(BigFlower.healingItemsFactory.getHealingItem());
-        itemsList.add(MiddleHPBottle.healingItemsFactory.getHealingItem());
-        itemsList.add(MiddleFlower.healingItemsFactory.getHealingItem());
-        itemsList.add(SmallHPBottle.healingItemsFactory.getHealingItem());
-        itemsList.add(SmallFlower.healingItemsFactory.getHealingItem());
+        itemsList.add(BigHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
+        itemsList.add(BigFlower.healingHitPointItemsFactory.getNewHealingManaPointItem());
+        itemsList.add(MiddleHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
+        itemsList.add(MiddleFlower.healingManaPointItemsFactory.getNewHealingManaPointItem());
+        itemsList.add(SmallHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
+        itemsList.add(SmallFlower.healingManaPointItemsFactory.getNewHealingManaPointItem());
 
         return  itemsList;
     }
+
 
     public static MonsterEquipmentFactory monsterEquipmentFactory = SimpleMonsterEquipment::new;
 }

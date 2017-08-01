@@ -1,11 +1,13 @@
-package game.model.Items.items.heal.healManaPoint;
+package game.model.Items.items.heal.healManaPoint.items;
 
 import game.model.Characters.Human;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.heal.HealingItemsFactory;
 import game.model.Items.items.heal.HealingItemsList;
+import game.model.Items.items.heal.healManaPoint.HealingManaPointItems;
+import game.model.Items.items.heal.healManaPoint.HealingManaPointItemsFactory;
 
-public class SmallFlower implements HealingItems{
+public class SmallFlower implements HealingManaPointItems{
 
     private final int price;
 
@@ -28,7 +30,7 @@ public class SmallFlower implements HealingItems{
         human.setManaPoint(human.getManaPoint() + human.getMaxManaPoint()/4);
     }
 
-    public static HealingItemsFactory healingItemsFactory = SmallFlower::new;
+    public static HealingManaPointItemsFactory healingManaPointItemsFactory = SmallFlower::new;
 
     public String toString(){
         return SmallFlower.class.getSimpleName();

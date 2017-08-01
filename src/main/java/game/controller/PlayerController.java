@@ -9,9 +9,14 @@ import game.model.Items.EquipmentItems;
 import game.model.Items.UsingItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
-import game.model.Items.items.heal.healHitPoint.BigHPBottle;
-import game.model.Items.items.heal.healHitPoint.MiddleHPBottle;
-import game.model.Items.items.heal.healHitPoint.SmallHPBottle;
+import game.model.Items.items.heal.healHitPoint.HealingHitPointItems;
+import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.MiddleHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.SmallHPBottle;
+import game.model.Items.items.heal.healManaPoint.HealingManaPointItems;
+import game.model.Items.items.heal.healManaPoint.items.BigFlower;
+import game.model.Items.items.heal.healManaPoint.items.MiddleFlower;
+import game.model.Items.items.heal.healManaPoint.items.SmallFlower;
 import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.Monsters.monsters.Demon;
@@ -73,7 +78,7 @@ public class PlayerController {
      *              boolean result
      */
     private boolean nextChoice(Human human){
-        System.out.println("What's next: use item for heal, walking for find new items, auto-battle for check your fortune, market for go to shop stop for break adventures or continue....");
+        System.out.println("What's next: use item for healHitPoint, walking for find new items, auto-battle for check your fortune, market for go to shop stop for break adventures or continue....");
         choice:
         while (true) {
             String s = scanner.nextLine();
@@ -119,7 +124,7 @@ public class PlayerController {
             punch(human, monster);
             if (monster.isDead()) break;
             System.out.println(human);
-            System.out.println("Choose next turn: use item for heal, use magic for addition damage, leave battle for alive or continue....");
+            System.out.println("Choose next turn: use item for healHitPoint, use magic for addition damage, leave battle for alive or continue....");
             choice:
             while (true){
                 String s = scanner.nextLine();
@@ -155,25 +160,27 @@ public class PlayerController {
     private void autoBattle(Human human){
         try{
             while (System.in.available()==0){
-                if (human.getInventory().isEmpty()) {
+                if (human.getInventory().size() < 5) {
                     System.out.println("I need go walk.... Pls, wait some time, I will be back\n" + human);
                     String walkingResults = walking(human);
                     System.out.println(walkingResults);
-                }
-                if (random.nextInt(10000000) == 9999999){
-                    Monster monster = spawn(human);
-                    if (Objects.equals(monster.getClass().getSimpleName(), Devil.class.getSimpleName()))
-                        System.out.println(monster);
-                    do{
-                        if (!autoHeal(human)) break;
-                        punch(human, monster);
-                        if (monster.isDead()) break;
-                        if (Objects.equals(monster.getClass().getSimpleName(), Devil.class.getSimpleName()))
-                            System.out.println(human);
-                    }while ((human.getHitPoint() > 0) && (monster.getHitPoint() > 0));
-                    human.getInventory().trimToSize();
-                    endEvent(human, monster, true);
-                    checkNewMagicPoint(human);
+                } else{
+                    if (random.nextInt(10000000) == 9999999){
+                        System.out.println("\n");
+                        Monster monster = spawn(human);
+                        if (monster instanceof Devil)
+                            System.out.println(monster);
+                        do {
+                            if (human.getHitPoint() <= human.getMaxHitPoint()/2)
+                                if (!autoHeal(human)) break;
+                            punch(human, monster);
+                            if (monster.isDead()) break;
+                            if (monster instanceof Devil)
+                                System.out.println(human);
+                        } while ((human.getHitPoint() > 0) && (monster.getHitPoint() > 0));
+                        endEvent(human, monster, true);
+                        checkNewMagicPoint(human);
+                    }
                 }
             }
         }catch (IOException e){
@@ -185,7 +192,7 @@ public class PlayerController {
         Trader trader = SimpleTrader.tradersFactory.getTrader(human);
         market:
         while(true){
-            System.out.println("\nHello my friend! Look at my priceList: enter equipment, heal or exit for exit from market....");
+            System.out.println("\nHello my friend! Look at my priceList: enter equipment, healHitPoint or exit for exit from market....");
             String s = scanner.nextLine();
             switch (s){
                 case "equipment":{
@@ -207,7 +214,7 @@ public class PlayerController {
                     }
                     break;
                 }
-                case "heal":{
+                case "healHitPoint":{
                     for (Map.Entry<Integer, HealingItems> entry :
                             trader.getPriceListHealingObjects().entrySet()){
                         System.out.println("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue());
@@ -342,28 +349,29 @@ public class PlayerController {
      * @param human
      *          Character implementation of {@link Human}
      * @return
-     *          boolean result of heal
+     *          boolean result of healHitPoint
      */
-    private boolean autoHeal(Human human){
-        if ((human.getHitPoint() < (human.getMaxHitPoint()/10)) && (human.getInventory().contains(BigHPBottle.healingItemsFactory.getHealingItem()))) {
-            ((UsingItems)human).use(BigHPBottle.healingItemsFactory.getHealingItem());
-            System.out.println(human);
-            return true;
-        }else if ((human.getHitPoint() < (human.getMaxHitPoint()/4)) && (human.getInventory().contains(MiddleHPBottle.healingItemsFactory.getHealingItem()))) {
-            ((UsingItems)human).use(MiddleHPBottle.healingItemsFactory.getHealingItem());
-            System.out.println(human);
-            return true;
-        }else if ((human.getHitPoint() < (human.getMaxHitPoint()/2)) && (human.getInventory().contains(SmallHPBottle.healingItemsFactory.getHealingItem()))) {
-            ((UsingItems)human).use(SmallHPBottle.healingItemsFactory.getHealingItem());
-            System.out.println(human);
-            return true;
-        }else if((human.getHitPoint() < (human.getMaxHitPoint()/3)) && (human.getInventory().isEmpty()) && (human.getManaPoint() >= SmallHealing.magicFactory.getMagicFactory(human.getMaxHitPoint()).getManaCost())){
-            Magic heal = SmallHealing.magicFactory.getMagicFactory(human.getMaxHitPoint());
-            human.getMagic(heal);
-            System.out.println(human);
-            return true;
-        } else return human.getHitPoint() > human.getMaxHitPoint() / 2;
+
+    private boolean autoHeal(Human human) {
+
+        if (human.checkHitPointBottle()){
+            return human.healHitPoint();
+        } else if (!human.checkHitPointBottle() && (human.checkManaPointBottle())){
+            if (human.getManaPoint() >= SmallHealing.magicFactory.getMagicFactory(human.getLevel()).getManaCost()){
+                Magic magic = SmallHealing.magicFactory.getMagicFactory(human.getLevel());
+                human.getMagic(magic);
+                return true;
+            } else {
+                if (human.healManaPoint()){
+                    Magic magic = SmallHealing.magicFactory.getMagicFactory(human.getLevel());
+                    human.getMagic(magic);
+                    return true;
+                } else return false;
+            }
+        } else return false;
     }
+
+
 
     /**
      * Пользователю предлагается использовать один из имеющихся у него предметов,

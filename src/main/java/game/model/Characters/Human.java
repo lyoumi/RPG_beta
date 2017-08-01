@@ -153,4 +153,12 @@ public interface Human {
      *          magic damage.
      */
     int getMagic(Magic magic);
+
+    boolean healHitPoint();
+
+    boolean healManaPoint();
+
+    boolean checkHitPointBottle();
+
+    boolean checkManaPointBottle();
 }

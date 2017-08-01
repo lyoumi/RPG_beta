@@ -3,8 +3,8 @@ package game.model.traders.traders;
 import game.model.Characters.Human;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
-import game.model.Items.items.heal.healHitPoint.BigHPBottle;
-import game.model.Items.items.heal.healManaPoint.BigFlower;
+import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
+import game.model.Items.items.heal.healManaPoint.items.BigFlower;
 import game.model.Items.items.weapons.weapons.LegendaryArcherBow;
 import game.model.traders.Trader;
 import game.model.traders.TradersFactory;
@@ -60,8 +60,8 @@ public class SimpleTrader implements Trader {
      */
     private void generatePriceList(){
         priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryArcherBow.itemsFactory.createNewItem(human));
-        priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigFlower.healingItemsFactory.getHealingItem());
-        priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigHPBottle.healingItemsFactory.getHealingItem());
+        priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigFlower.healingHitPointItemsFactory.getNewHealingManaPointItem());
+        priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
     }
 
     @Override

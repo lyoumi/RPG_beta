@@ -1,11 +1,13 @@
-package game.model.Items.items.heal.healHitPoint;
+package game.model.Items.items.heal.healHitPoint.items;
 
 import game.model.Characters.Human;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.heal.HealingItemsFactory;
 import game.model.Items.items.heal.HealingItemsList;
+import game.model.Items.items.heal.healHitPoint.HealingHitPointItems;
+import game.model.Items.items.heal.healHitPoint.HealingHitPointItemsFactory;
 
-public class MiddleHPBottle implements HealingItems {
+public class MiddleHPBottle implements HealingHitPointItems {
 
     private final int price;
 
@@ -28,7 +30,8 @@ public class MiddleHPBottle implements HealingItems {
         human.setHitPoint(human.getHitPoint() + human.getMaxHitPoint()/2);
     }
 
-    public static HealingItemsFactory healingItemsFactory = MiddleHPBottle::new;
+    public static HealingHitPointItemsFactory healingHitPointItemsFactory = MiddleHPBottle::new;
+
 
     public String toString(){
         return MiddleHPBottle.class.getSimpleName();

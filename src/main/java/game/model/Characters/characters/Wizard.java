@@ -58,6 +58,26 @@ public class Wizard implements Human {
         return 0;
     }
 
+    @Override
+    public boolean healHitPoint() {
+        return false;
+    }
+
+    @Override
+    public boolean healManaPoint() {
+        return false;
+    }
+
+    @Override
+    public boolean checkHitPointBottle() {
+        return false;
+    }
+
+    @Override
+    public boolean checkManaPointBottle() {
+        return false;
+    }
+
     public void setPower(int power) {
         this.power = power;
     }
