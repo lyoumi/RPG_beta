@@ -1,6 +1,7 @@
 package game.model.Characters.characters;
 
 import game.model.Characters.CharacterFactory;
+import game.model.Characters.CharacterNames;
 import game.model.Characters.Human;
 import game.model.Items.Equipment;
 import game.model.Items.EquipmentItems;
@@ -32,6 +33,9 @@ import java.util.*;
  */
 public class Archer implements Human, UsingItems, Equipment{
 
+    private Random random = new Random();
+
+    private String name;
     private int agility = 22;
     private int intelligence = 13;
     private int power = 11;
@@ -51,6 +55,11 @@ public class Archer implements Human, UsingItems, Equipment{
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 6;
     private int gold = 0;
+
+    private Archer(){
+        List<CharacterNames> names = Collections.unmodifiableList(Arrays.asList(CharacterNames.values()));
+        this.name = names.get(random.nextInt(names.size())).toString();
+    }
 
     private int getMultiplierAgility() {
         return multiplierAgility;
@@ -125,6 +134,10 @@ public class Archer implements Human, UsingItems, Equipment{
         this.power = power;
     }
 
+    private int getBaseDamage(){
+        return baseDamage;
+    }
+
     private int getDefence() {
         defence = 0;
         for (Map.Entry<EquipmentItems, Item> entry :
@@ -159,9 +172,80 @@ public class Archer implements Human, UsingItems, Equipment{
         setManaPoint(getAgility()*getMultiplierIntelligence());
     }
 
+    private boolean isHealingBigHitPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof BigHPBottle) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHealingMiddleHitPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof MiddleHPBottle) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHealingSmallHitPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof SmallHPBottle) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHealingBigManaPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof BigFlower) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHealingMiddleManaPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof MiddleFlower) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isHealingSmallManaPointBottle(){
+        for (HealingItems item :
+                getInventory()) {
+            if (item instanceof SmallFlower) {
+                use(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setManaPoint(int mana) {
         if (mana > getMaxManaPoint()) this.mana = getMaxManaPoint();
         else this.mana = mana;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -216,10 +300,6 @@ public class Archer implements Human, UsingItems, Equipment{
                 return iceChains.getDamage();
             } else return notEnoughOfMana();
         } else return notEnoughOfMana();
-    }
-
-    private int getBaseDamage(){
-        return baseDamage;
     }
 
     @Override
@@ -277,6 +357,7 @@ public class Archer implements Human, UsingItems, Equipment{
         return inventory.add(item);
     }
 
+    @Override
     public boolean addAll(List<HealingItems> items) {
         return inventory.addAll(items);
     }
@@ -322,91 +403,17 @@ public class Archer implements Human, UsingItems, Equipment{
         }
     }
 
-    private boolean isHealingBigHitPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof BigHPBottle) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isHealigMiddleHitPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof MiddleHPBottle) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isHealingSmallHitPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof SmallHPBottle) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isHealingBigManaPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof BigFlower) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isHealingMiddleManaPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof MiddleFlower) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
-    }
-    private boolean isHealingSmallManaPointBottle(){
-        for (HealingItems item :
-                getInventory()) {
-            if (item instanceof SmallFlower) {
-                use(item);
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean healHitPoint() {
+        return isHealingBigHitPointBottle() || isHealingMiddleHitPointBottle() || isHealingSmallHitPointBottle();
     }
 
-    public boolean healHitPoint(){
-        if (isHealingBigHitPointBottle()) {
-            return true;
-        }
-        else if (isHealigMiddleHitPointBottle()) {
-            return true;
-        }
-        else {
-            return isHealingSmallHitPointBottle();
-        }
+    @Override
+    public boolean healManaPoint() {
+        return isHealingBigManaPointBottle() || isHealingMiddleManaPointBottle() || isHealingSmallManaPointBottle();
     }
 
-    public boolean healManaPoint(){
-        if (isHealingBigManaPointBottle()) {
-            return true;
-        }
-        else if (isHealingMiddleManaPointBottle()) {
-            return true;
-        }
-        else  {
-            return isHealingSmallManaPointBottle();
-        }
-    }
-
+    @Override
     public boolean checkHitPointBottle(){
         ArrayList<HealingItems> healingItems = getInventory();
         for (HealingItems item :
@@ -416,6 +423,7 @@ public class Archer implements Human, UsingItems, Equipment{
         return false;
     }
 
+    @Override
     public boolean checkManaPointBottle(){
         ArrayList<HealingItems> healingItems = getInventory();
         for (HealingItems item :
@@ -435,8 +443,10 @@ public class Archer implements Human, UsingItems, Equipment{
         return equipmentItems;
     }
 
+    @Override
     public String toString(){
-        return "Class: " + Archer.class.getSimpleName() +
+        return "Class: " + this.getClass().getSimpleName() +
+                " - " + getName() +
                 "; HP " + String.valueOf(getHitPoint()) +
                 "; MP " + getManaPoint() +
                 "; Lvl: " + String.valueOf(getLevel()) +

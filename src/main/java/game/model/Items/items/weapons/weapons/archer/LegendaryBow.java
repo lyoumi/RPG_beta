@@ -1,4 +1,4 @@
-package game.model.Items.items.weapons.weapons;
+package game.model.Items.items.weapons.weapons.archer;
 
 import game.model.Characters.Human;
 import game.model.Items.EquipmentItems;
@@ -10,7 +10,7 @@ import game.model.abilities.debuffs.debuffs.damage.BurningJoe;
 
 import java.util.Random;
 
-public class LegendaryArcherBow implements Weapons {
+public class LegendaryBow implements Weapons {
     private int damage;
     private int itemLevel;
     private Human human;
@@ -19,7 +19,7 @@ public class LegendaryArcherBow implements Weapons {
 
     private Random random = new Random();
 
-    private LegendaryArcherBow(Human human){
+    private LegendaryBow(Human human){
         this.human = human;
         this.itemLevel = random.nextInt(human.getLevel() + 1) + 5;
         this.damage = getItemLevel() * 9;
@@ -44,7 +44,7 @@ public class LegendaryArcherBow implements Weapons {
 
     @Override
     public String getName() {
-        return LegendaryArcherBow.class.getSimpleName();
+        return LegendaryBow.class.getSimpleName();
     }
 
     @Override
@@ -57,5 +57,10 @@ public class LegendaryArcherBow implements Weapons {
         return 0;
     }
 
-    public static ItemsFactory itemsFactory = LegendaryArcherBow::new;
+    @Override
+    public String toString(){
+        return getName() + ": " + " ATK +" + getDamage();
+    }
+
+    public static ItemsFactory itemsFactory = LegendaryBow::new;
 }

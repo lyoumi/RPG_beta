@@ -5,7 +5,7 @@ import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
 import game.model.Items.items.heal.healManaPoint.items.BigFlower;
-import game.model.Items.items.weapons.weapons.LegendaryArcherBow;
+import game.model.Items.items.weapons.weapons.archer.LegendaryBow;
 import game.model.traders.Trader;
 import game.model.traders.TradersFactory;
 import lib.RandomUniqueValue;
@@ -59,7 +59,7 @@ public class SimpleTrader implements Trader {
      * Метод, заполняющий map'ы предметами и их id.
      */
     private void generatePriceList(){
-        priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryArcherBow.itemsFactory.createNewItem(human));
+        priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBow.itemsFactory.createNewItem(human));
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigFlower.healingHitPointItemsFactory.getNewHealingManaPointItem());
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
     }

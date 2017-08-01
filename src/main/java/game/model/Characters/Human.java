@@ -14,6 +14,8 @@ import java.util.ArrayList;
  */
 public interface Human {
 
+    String getName();
+
     /**
      * Метод, возвращающий текущее количество золота у персонажа.
      *

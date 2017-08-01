@@ -1,18 +1,16 @@
-package game.model.Items.items.weapons.weapons;
+package game.model.Items.items.weapons.weapons.wizard;
 
 import game.model.Characters.Human;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.weapons.Weapons;
+import game.model.Items.items.weapons.weapons.archer.Bow;
 import game.model.abilities.Magic;
-import game.model.abilities.buffs.buffs.ArchersBuff;
+import game.model.abilities.buffs.buffs.WizardBuff;
 
 import java.util.Random;
 
-/**
- * Created by pikachu on 17.07.17.
- */
-public class Bow implements Weapons {
+public class Staff implements Weapons{
     private int damage;
     private int itemLevel;
     private Human human;
@@ -21,12 +19,12 @@ public class Bow implements Weapons {
 
     private Random random = new Random();
 
-    private Bow(Human human){
+    private Staff(Human human){
         this.human = human;
         this.itemLevel = random.nextInt(human.getLevel() + 1);
         this.price = 100* getItemLevel();
-        this.damage = getItemLevel() * 7 + 5;
-        this.magic = ArchersBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.damage = getItemLevel() * 6 + 5;
+        this.magic = WizardBuff.magicFactory.getMagicFactory(human.getLevel());
     }
 
     @Override
@@ -56,13 +54,13 @@ public class Bow implements Weapons {
 
     @Override
     public String getName() {
-        return Bow.class.getSimpleName();
+        return Staff.class.getSimpleName();
     }
 
     @Override
     public String toString(){
-        return Bow.class.getSimpleName() + ": " + " ATK +" + getDamage();
+        return getName() + ": " + " ATK +" + getDamage();
     }
 
-    public static ItemsFactory itemsFactory = Bow::new;
+    public static ItemsFactory itemsFactory = Staff::new;
 }

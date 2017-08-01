@@ -1,4 +1,4 @@
-package game.model.Items.items.weapons.weapons;
+package game.model.Items.items.weapons.weapons.archer;
 
 import game.model.Characters.Human;
 import game.model.Items.EquipmentItems;

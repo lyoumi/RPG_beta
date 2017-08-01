@@ -188,6 +188,12 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Метод, реализующий поведение торговца.
+     *
+     * @param human
+     *              character implementation of {@link Human}
+     */
     private void trader(Human human){
         Trader trader = SimpleTrader.tradersFactory.getTrader(human);
         market:
