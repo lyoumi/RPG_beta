@@ -1,10 +1,9 @@
 package game.model.Items.items.weapons.weapons.wizard;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.weapons.Weapons;
-import game.model.Items.items.weapons.weapons.archer.Bow;
 import game.model.abilities.Magic;
 import game.model.abilities.buffs.buffs.WizardBuff;
 
@@ -13,18 +12,18 @@ import java.util.Random;
 public class Staff implements Weapons{
     private int damage;
     private int itemLevel;
-    private Human human;
+    private Character character;
     private Magic magic;
     private final int price;
 
     private Random random = new Random();
 
-    private Staff(Human human){
-        this.human = human;
-        this.itemLevel = random.nextInt(human.getLevel() + 1);
+    private Staff(Character character){
+        this.character = character;
+        this.itemLevel = random.nextInt(character.getLevel() + 1);
         this.price = 100* getItemLevel();
         this.damage = getItemLevel() * 6 + 5;
-        this.magic = WizardBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.magic = WizardBuff.magicFactory.getMagicFactory(character.getLevel());
     }
 
     @Override

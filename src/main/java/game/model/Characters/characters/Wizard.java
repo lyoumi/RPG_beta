@@ -1,8 +1,8 @@
 package game.model.Characters.characters;
 
+import game.model.Characters.Character;
 import game.model.Characters.CharacterFactory;
 import game.model.Characters.CharacterNames;
-import game.model.Characters.Human;
 import game.model.Items.Equipment;
 import game.model.Items.EquipmentItems;
 import game.model.Items.UsingItems;
@@ -22,16 +22,14 @@ import game.model.abilities.Magic;
 import game.model.abilities.MagicClasses;
 import game.model.abilities.buffs.BuffClasses;
 import game.model.abilities.buffs.BuffMagic;
-import game.model.abilities.instants.instants.combat.FireBall;
-import game.model.abilities.instants.instants.combat.IceChains;
-import game.model.abilities.instants.instants.healing.SmallHealing;
+import game.model.abilities.instants.InstantMagic;
 
 import java.util.*;
 
 /**
  * Created by pikachu on 13.07.17.
  */
-public class Wizard implements Human, Equipment, UsingItems {
+public class Wizard implements Character, Equipment, UsingItems {
 
     private Random random = new Random();
 
@@ -55,6 +53,8 @@ public class Wizard implements Human, Equipment, UsingItems {
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 5;
     private int gold = 0;
+    private int count;
+    private BuffMagic buffMagic;
 
     private Wizard(){
         List<CharacterNames> names = Collections.unmodifiableList(Arrays.asList(CharacterNames.values()));
@@ -106,7 +106,7 @@ public class Wizard implements Human, Equipment, UsingItems {
     }
 
     private int getAgility() {
-        return agility + getSummaryAdditionParam(BuffClasses.intelligence);
+        return agility + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.agility);
     }
 
     private void setAgility(int agility) {
@@ -114,7 +114,7 @@ public class Wizard implements Human, Equipment, UsingItems {
     }
 
     private int getIntelligence() {
-        return intelligence + getSummaryAdditionParam(BuffClasses.intelligence);
+        return intelligence + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.intelligence);
     }
 
     private void setIntelligence(int intelligence) {
@@ -127,7 +127,7 @@ public class Wizard implements Human, Equipment, UsingItems {
     }
 
     private int getPower() {
-        return power + getSummaryAdditionParam(BuffClasses.power);
+        return power + getSummaryAdditionParam(BuffClasses.power) + getBuffEffect(BuffClasses.power);
     }
 
     private void setPower(int power) {
@@ -142,7 +142,7 @@ public class Wizard implements Human, Equipment, UsingItems {
                 defence += ((Armor) entry.getValue()).getDefence();
             }
         }
-        return defence;
+        return defence  + getBuffEffect(BuffClasses.defence);
     }
 
     private int getSummaryAdditionParam(BuffClasses buffClass){
@@ -163,8 +163,8 @@ public class Wizard implements Human, Equipment, UsingItems {
     }
 
     private void updateStats(){
-        setHitPoint(getPower()*10);
-        setDamage(getAgility()*getMultiplierAgility());
+        setHitPoint(getPower()*getMultiplierPower());
+        setDamage(getAgility()*getMultiplierIntelligence());
         setManaPoint(getAgility()*getMultiplierIntelligence());
     }
 
@@ -179,7 +179,7 @@ public class Wizard implements Human, Equipment, UsingItems {
         return false;
     }
 
-    private boolean isHealigMiddleHitPointBottle(){
+    private boolean isHealingMiddleHitPointBottle(){
         for (HealingItems item :
                 getInventory()) {
             if (item instanceof MiddleHPBottle) {
@@ -238,6 +238,18 @@ public class Wizard implements Human, Equipment, UsingItems {
         return baseDamage;
     }
 
+    private void activateBuff(Magic magic){
+        buffMagic = (BuffMagic) magic;
+        count = 6;
+    }
+
+    private int getBuffEffect(BuffClasses buffClass){
+        if (!Objects.equals(buffClass, null)){
+            if (count > 0) return buffMagic.getEffect().getOrDefault(buffClass, 0);
+            else return 0;
+        } else return 0;
+    }
+
     public void setManaPoint(int mana) {
         if (mana > getMaxManaPoint()) this.mana = getMaxManaPoint();
         else this.mana = mana;
@@ -280,25 +292,17 @@ public class Wizard implements Human, Equipment, UsingItems {
 
     @Override
     public int getMagic(Magic magic) {
-        if (magic instanceof FireBall) {
-            FireBall fireBall = (FireBall) magic;
-            if(getManaPoint() >= fireBall.getManaCost()){
-                setManaPoint(getManaPoint()-fireBall.getManaCost());
-                return fireBall.getDamage();
-            } else return notEnoughOfMana();
-        }else if (magic instanceof SmallHealing){
-            System.out.println(toString());
-            SmallHealing healing = (SmallHealing) magic;
-            if (getManaPoint() >= healing.getManaCost()){
-                setManaPoint(getManaPoint()-healing.getManaCost());
-                return healing.getDamage();
-            } else return notEnoughOfMana();
-        }else if(magic instanceof IceChains){
-            IceChains iceChains = (IceChains) magic;
-            if(getManaPoint() >= iceChains.getManaCost()){
-                setManaPoint(getManaPoint()-iceChains.getManaCost());
-                return iceChains.getDamage();
-            } else return notEnoughOfMana();
+        if (getManaPoint() >= magic.getManaCost()) {
+            if (magic.getMagicClass().equals(MagicClasses.COMBAT)) {
+                setManaPoint(getManaPoint() - magic.getManaCost());
+                return ((InstantMagic) magic).getDamage();
+            } else if (magic.getMagicClass().equals(MagicClasses.HEALING)) {
+                setManaPoint(getManaPoint() - magic.getManaCost());
+                return ((InstantMagic) magic).getDamage();
+            } else {
+                activateBuff(magic);
+                return 0;
+            }
         } else return notEnoughOfMana();
     }
 
@@ -405,7 +409,7 @@ public class Wizard implements Human, Equipment, UsingItems {
 
     @Override
     public boolean healHitPoint() {
-        return isHealingBigHitPointBottle() || isHealigMiddleHitPointBottle() || isHealingSmallHitPointBottle();
+        return isHealingBigHitPointBottle() || isHealingMiddleHitPointBottle() || isHealingSmallHitPointBottle();
     }
 
     @Override
@@ -449,10 +453,10 @@ public class Wizard implements Human, Equipment, UsingItems {
                 " - " + getName() +
                 "; HP " + String.valueOf(getHitPoint()) +
                 "; MP " + getManaPoint() +
-                "; Lvl: " + String.valueOf(getLevel()) +
-                "; Exp to next level: " + expToNextLevel() +
                 "; DMG: " + getDamage() +
                 "; DEF: " + getDefence() +
+                "; Lvl: " + String.valueOf(getLevel()) +
+                "; Exp to next level: " + expToNextLevel() +
                 "; GOLD: " + getGold();
     }
 

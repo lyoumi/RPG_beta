@@ -1,6 +1,6 @@
 package game.model.Monsters.monsters;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
@@ -25,7 +25,7 @@ public class Demon implements Monster {
     private static List<HealingItems> itemsList;
 
     private int level;
-    private Human human;
+    private Character character;
 
     private int damage;
     private int hitPoint;
@@ -37,19 +37,19 @@ public class Demon implements Monster {
 
     private DebuffMagic debuffMagic;
 
-    private Demon(Human human){
-        this.human = human;
-        level = human.getLevel() + 1;
+    private Demon(Character character){
+        this.character = character;
+        level = character.getLevel() + 1;
         hitPoint = level *35;
         damage = level *10;
-        setEquipmentOfDemon(human);
+        setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
     }
 
 
-    private void setEquipmentOfDemon(Human human) {
-        this.equipmentOfDemon = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(human);
+    private void setEquipmentOfDemon(Character character) {
+        this.equipmentOfDemon = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(character);
     }
 
     private boolean isBuffed() {

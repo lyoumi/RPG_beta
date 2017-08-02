@@ -8,7 +8,7 @@ package game.model.abilities;
  * Перечень возможных типов магий.
  */
 public enum MagicClasses {
-    BUFF,
-    DEBUFF,
-    INSTANT
+    COMBAT,
+    HEALING,
+    BUFF
 }

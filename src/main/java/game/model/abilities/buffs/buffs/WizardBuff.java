@@ -43,5 +43,10 @@ public class WizardBuff  implements BuffMagic{
         return MagicClasses.BUFF;
     }
 
+    @Override
+    public String toString(){
+        return this.getClass().getSimpleName();
+    }
+
     public static MagicFactory magicFactory = WizardBuff::new;
 }

@@ -1,6 +1,6 @@
 package game.model.Items.items.weapons.weapons.archer;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.weapons.Weapons;
@@ -13,17 +13,17 @@ import java.util.Random;
 public class LegendaryBow implements Weapons {
     private int damage;
     private int itemLevel;
-    private Human human;
+    private Character character;
     private Magic buff;
     private Magic magic;
 
     private Random random = new Random();
 
-    private LegendaryBow(Human human){
-        this.human = human;
-        this.itemLevel = random.nextInt(human.getLevel() + 1) + 5;
+    private LegendaryBow(Character character){
+        this.character = character;
+        this.itemLevel = random.nextInt(character.getLevel() + 1) + 5;
         this.damage = getItemLevel() * 9;
-        this.buff = ArchersBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.buff = ArchersBuff.magicFactory.getMagicFactory(character.getLevel());
         this.magic = BurningJoe.magicFactory.getMagicFactory(getItemLevel());
     }
 

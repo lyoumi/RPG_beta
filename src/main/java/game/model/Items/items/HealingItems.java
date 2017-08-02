@@ -1,6 +1,6 @@
 package game.model.Items.items;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.items.heal.HealingItemsList;
 
 public interface HealingItems {
@@ -24,8 +24,8 @@ public interface HealingItems {
     /**
      * Метод, реализующий использование  текущего предмета.
      *
-     * @param human
-     *              character implementation of {@link Human}
+     * @param character
+     *              character implementation of {@link Character}
      */
-    void use(Human human);
+    void use(Character character);
 }

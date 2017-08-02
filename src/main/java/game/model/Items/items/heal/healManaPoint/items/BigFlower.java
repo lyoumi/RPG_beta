@@ -1,8 +1,7 @@
 package game.model.Items.items.heal.healManaPoint.items;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.items.heal.HealingItemsList;
-import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
 import game.model.Items.items.heal.healManaPoint.HealingManaPointItems;
 import game.model.Items.items.heal.healManaPoint.HealingManaPointItemsFactory;
 
@@ -25,8 +24,8 @@ public class BigFlower implements HealingManaPointItems {
     }
 
     @Override
-    public void use(Human human) {
-        human.setManaPoint(human.getMaxManaPoint());
+    public void use(Character character) {
+        character.setManaPoint(character.getMaxManaPoint());
     }
 
     public static HealingManaPointItemsFactory healingHitPointItemsFactory = BigFlower::new;

@@ -1,6 +1,6 @@
 package game.model.Items.items.heal.healHitPoint;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.heal.HealingItemsList;
 
@@ -12,5 +12,5 @@ public interface HealingHitPointItems extends HealingItems{
     HealingItemsList getHealingItemClass();
 
     @Override
-    void use(Human human);
+    void use(Character character);
 }

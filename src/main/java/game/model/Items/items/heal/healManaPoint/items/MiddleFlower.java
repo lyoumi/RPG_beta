@@ -1,8 +1,6 @@
 package game.model.Items.items.heal.healManaPoint.items;
 
-import game.model.Characters.Human;
-import game.model.Items.items.HealingItems;
-import game.model.Items.items.heal.HealingItemsFactory;
+import game.model.Characters.Character;
 import game.model.Items.items.heal.HealingItemsList;
 import game.model.Items.items.heal.healManaPoint.HealingManaPointItems;
 import game.model.Items.items.heal.healManaPoint.HealingManaPointItemsFactory;
@@ -26,8 +24,8 @@ public class MiddleFlower implements HealingManaPointItems{
     }
 
     @Override
-    public void use(Human human) {
-        human.setManaPoint(human.getManaPoint() + human.getMaxManaPoint()/2);
+    public void use(Character character) {
+        character.setManaPoint(character.getManaPoint() + character.getMaxManaPoint()/2);
     }
 
     public static HealingManaPointItemsFactory healingManaPointItemsFactory = MiddleFlower::new;

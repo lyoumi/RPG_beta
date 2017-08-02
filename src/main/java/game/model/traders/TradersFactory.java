@@ -1,7 +1,7 @@
 package game.model.traders;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 
 public interface TradersFactory {
-    Trader getTrader(Human human);
+    Trader getTrader(Character character);
 }

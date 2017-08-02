@@ -4,15 +4,13 @@ import game.model.abilities.MagicClasses;
 import game.model.abilities.MagicFactory;
 import game.model.abilities.instants.InstantMagic;
 
-/**
- * Боевая магия, наносящая урон противнику
- */
-public class FireBall implements InstantMagic {
+public class WindsOfWinter implements InstantMagic{
+
     private int level;
-    private int damage = 50;
+    private int damage = 60;
     private int manaCost;
 
-    private FireBall(int level){
+    private WindsOfWinter(int level){
         this.level = level;
         this.manaCost = getLevel() * 10;
     }
@@ -24,7 +22,7 @@ public class FireBall implements InstantMagic {
 
     @Override
     public void setDamage() {
-        this.damage += 50;
+        damage += 60;
     }
 
     @Override
@@ -37,16 +35,10 @@ public class FireBall implements InstantMagic {
         return manaCost;
     }
 
-
     @Override
     public MagicClasses getMagicClass() {
         return MagicClasses.COMBAT;
     }
 
-    @Override
-    public String toString(){
-        return this.getClass().getSimpleName();
-    }
-
-    public static MagicFactory magicFactory = FireBall::new;
+    public static MagicFactory magicFactory = WindsOfWinter::new;
 }

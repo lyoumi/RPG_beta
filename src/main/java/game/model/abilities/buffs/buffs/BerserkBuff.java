@@ -43,5 +43,10 @@ public class BerserkBuff implements BuffMagic{
         return MagicClasses.BUFF;
     }
 
+    @Override
+    public String toString(){
+        return this.getClass().getSimpleName();
+    }
+
     public static MagicFactory magicFactory = BerserkBuff::new;
 }

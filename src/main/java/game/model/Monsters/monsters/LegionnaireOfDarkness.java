@@ -1,6 +1,6 @@
 package game.model.Monsters.monsters;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
@@ -24,7 +24,7 @@ public class LegionnaireOfDarkness implements Monster {
     private static int sizeOfItems;
 
     private int level;
-    private Human human;
+    private Character character;
 
     private int damage;
     private int hitPoint;
@@ -37,18 +37,18 @@ public class LegionnaireOfDarkness implements Monster {
 
     private DebuffMagic debuffMagic;
 
-    private LegionnaireOfDarkness(Human human){
-        this.human = human;
-        level = human.getLevel() + 1;
+    private LegionnaireOfDarkness(Character character){
+        this.character = character;
+        level = character.getLevel() + 1;
         hitPoint = (level)*70;
         damage = (level)*20;
-        setEquipmentOfDemon(human);
+        setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
     }
 
-    private void setEquipmentOfDemon(Human human) {
-        this.equipmentOfDemon = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(human);
+    private void setEquipmentOfDemon(Character character) {
+        this.equipmentOfDemon = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(character);
     }
 
     private boolean isBuffed() {
@@ -76,7 +76,7 @@ public class LegionnaireOfDarkness implements Monster {
     private int getMagicDamage(){
         boolean chance = random.nextBoolean();
         if (chance){
-            FireBall fireBall = (FireBall) FireBall.magicFactory.getMagicFactory(human.getLevel());
+            FireBall fireBall = (FireBall) FireBall.magicFactory.getMagicFactory(character.getLevel());
             return fireBall.getDamage();
         } else return 0;
     }

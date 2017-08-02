@@ -1,6 +1,6 @@
 package game.model.Items.items.weapons.weapons.archer;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.weapons.Weapons;
@@ -16,16 +16,16 @@ public class Sword implements Weapons {
 
     private int damage;
     private int level;
-    private Human human;
+    private Character character;
     private Magic magic;
 
     private Random random = new Random();
 
-    private Sword(Human human){
-        this.human = human;
-        this.level = random.nextInt(human.getLevel() + 1);
+    private Sword(Character character){
+        this.character = character;
+        this.level = random.nextInt(character.getLevel() + 1);
         this.damage = this.getItemLevel() * 5 + 5;
-        this.magic = ArchersBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.magic = ArchersBuff.magicFactory.getMagicFactory(character.getLevel());
     }
 
     @Override

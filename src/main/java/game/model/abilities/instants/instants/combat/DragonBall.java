@@ -4,17 +4,15 @@ import game.model.abilities.MagicClasses;
 import game.model.abilities.MagicFactory;
 import game.model.abilities.instants.InstantMagic;
 
-/**
- * Боевая магия, наносящая урон противнику
- */
-public class FireBall implements InstantMagic {
+public class DragonBall implements InstantMagic{
+
     private int level;
-    private int damage = 50;
+    private int damage = 70;
     private int manaCost;
 
-    private FireBall(int level){
+    private DragonBall(int level) {
         this.level = level;
-        this.manaCost = getLevel() * 10;
+        this.manaCost = getLevel() * 5;
     }
 
     @Override
@@ -24,7 +22,7 @@ public class FireBall implements InstantMagic {
 
     @Override
     public void setDamage() {
-        this.damage += 50;
+        damage += 70;
     }
 
     @Override
@@ -37,16 +35,14 @@ public class FireBall implements InstantMagic {
         return manaCost;
     }
 
-
     @Override
     public MagicClasses getMagicClass() {
         return MagicClasses.COMBAT;
     }
 
-    @Override
     public String toString(){
         return this.getClass().getSimpleName();
     }
 
-    public static MagicFactory magicFactory = FireBall::new;
+    public static MagicFactory magicFactory = DragonBall::new;
 }

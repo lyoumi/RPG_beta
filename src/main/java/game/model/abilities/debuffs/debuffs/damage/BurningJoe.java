@@ -38,7 +38,12 @@ public class BurningJoe implements DebuffMagic {
 
     @Override
     public MagicClasses getMagicClass() {
-        return MagicClasses.DEBUFF;
+        return MagicClasses.COMBAT;
+    }
+
+    @Override
+    public String toString(){
+        return this.getClass().getSimpleName();
     }
 
     public static MagicFactory magicFactory = BurningJoe::new;

@@ -6,7 +6,7 @@
 
     <groupId>my.game</groupId>
     <artifactId>RPG</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.2</version>
 
     <build>
         <plugins>

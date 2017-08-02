@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Базовый интерфейс для реализации классов персонажей.
  */
-public interface Human {
+public interface Character {
 
     String getName();
 

@@ -1,6 +1,6 @@
 package game.model.Items.items.weapons.weapons.archer;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.ItemsFactory;
 import game.model.Items.items.weapons.Weapons;
@@ -15,18 +15,18 @@ import java.util.Random;
 public class Bow implements Weapons {
     private int damage;
     private int itemLevel;
-    private Human human;
+    private Character character;
     private Magic magic;
     private final int price;
 
     private Random random = new Random();
 
-    private Bow(Human human){
-        this.human = human;
-        this.itemLevel = random.nextInt(human.getLevel() + 1);
+    private Bow(Character character){
+        this.character = character;
+        this.itemLevel = random.nextInt(character.getLevel() + 1);
         this.price = 100* getItemLevel();
         this.damage = getItemLevel() * 7 + 5;
-        this.magic = ArchersBuff.magicFactory.getMagicFactory(human.getLevel());
+        this.magic = ArchersBuff.magicFactory.getMagicFactory(character.getLevel());
     }
 
     @Override

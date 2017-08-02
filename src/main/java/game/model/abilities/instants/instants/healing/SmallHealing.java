@@ -34,7 +34,12 @@ public class SmallHealing implements InstantMagic {
 
     @Override
     public MagicClasses getMagicClass() {
-        return MagicClasses.INSTANT;
+        return MagicClasses.HEALING;
+    }
+
+    @Override
+    public String toString(){
+        return this.getClass().getSimpleName();
     }
 
     public static MagicFactory magicFactory = SmallHealing::new;

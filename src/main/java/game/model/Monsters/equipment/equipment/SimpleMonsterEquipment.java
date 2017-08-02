@@ -1,6 +1,6 @@
 package game.model.Monsters.equipment.equipment;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Characters.characters.Archer;
 import game.model.Characters.characters.Berserk;
 import game.model.Items.EquipmentItems;
@@ -36,34 +36,34 @@ public class SimpleMonsterEquipment implements MonsterEquipment {
 
     private Random random = new Random();
 
-    public HashMap<EquipmentItems, Item> initEquipment(Human human){
+    public HashMap<EquipmentItems, Item> initEquipment(Character character){
         HashMap<EquipmentItems, Item> equipment = new HashMap<>();
         int i = random.nextInt(10);
-        if (human instanceof Archer){
+        if (character instanceof Archer){
             if(i == 9)
-                equipment.put(LegendaryBow.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), LegendaryBow.itemsFactory.createNewItem(human));
+                equipment.put(LegendaryBow.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), LegendaryBow.itemsFactory.createNewItem(character));
             else if ((i > 0) && (i < 3))
-                equipment.put(Bow.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), Bow.itemsFactory.createNewItem(human));
+                equipment.put(Bow.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Bow.itemsFactory.createNewItem(character));
             else
-                equipment.put(Sword.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), Sword.itemsFactory.createNewItem(human));
-        } else if (human instanceof Berserk){
+                equipment.put(Sword.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Sword.itemsFactory.createNewItem(character));
+        } else if (character instanceof Berserk){
             if(i == 9)
-                equipment.put(LegendaryBoxGloves.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), LegendaryBoxGloves.itemsFactory.createNewItem(human));
+                equipment.put(LegendaryBoxGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), LegendaryBoxGloves.itemsFactory.createNewItem(character));
             else if ((i > 0) && (i < 3))
-                equipment.put(BoxGloves.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), BoxGloves.itemsFactory.createNewItem(human));
+                equipment.put(BoxGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), BoxGloves.itemsFactory.createNewItem(character));
             else
-                equipment.put(Gloves.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), Gloves.itemsFactory.createNewItem(human));
+                equipment.put(Gloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Gloves.itemsFactory.createNewItem(character));
         } else {
             if(i == 9)
-                equipment.put(LegendaryStaff.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), LegendaryStaff.itemsFactory.createNewItem(human));
+                equipment.put(LegendaryStaff.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), LegendaryStaff.itemsFactory.createNewItem(character));
             else if ((i > 0) && (i < 3))
-                equipment.put(Staff.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), Staff.itemsFactory.createNewItem(human));
+                equipment.put(Staff.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Staff.itemsFactory.createNewItem(character));
             else
-                equipment.put(MagicWand.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), MagicWand.itemsFactory.createNewItem(human));
+                equipment.put(MagicWand.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), MagicWand.itemsFactory.createNewItem(character));
         }
-        equipment.put(IronHelmet.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), IronHelmet.itemsFactory.createNewItem(human));
-        equipment.put(IronChest.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), IronChest.itemsFactory.createNewItem(human));
-        equipment.put(IronBoots.itemsFactory.createNewItem(human).EQUIPMENT_ITEMS(), IronBoots.itemsFactory.createNewItem(human));
+        equipment.put(IronHelmet.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), IronHelmet.itemsFactory.createNewItem(character));
+        equipment.put(IronChest.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), IronChest.itemsFactory.createNewItem(character));
+        equipment.put(IronBoots.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), IronBoots.itemsFactory.createNewItem(character));
         return equipment;
     }
 

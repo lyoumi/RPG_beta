@@ -1,7 +1,7 @@
 package game.model.Items.items;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 
 public interface ItemsFactory {
-    Item createNewItem(Human human);
+    Item createNewItem(Character character);
 }

@@ -1,7 +1,7 @@
 package game.model.Monsters;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 
 public interface MonsterFactory {
-    Monster createNewMonster(Human human);
+    Monster createNewMonster(Character character);
 }

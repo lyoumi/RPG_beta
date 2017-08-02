@@ -1,8 +1,6 @@
 package game.model.Items.items.heal.healHitPoint.items;
 
-import game.model.Characters.Human;
-import game.model.Items.items.HealingItems;
-import game.model.Items.items.heal.HealingItemsFactory;
+import game.model.Characters.Character;
 import game.model.Items.items.heal.HealingItemsList;
 import game.model.Items.items.heal.healHitPoint.HealingHitPointItems;
 import game.model.Items.items.heal.healHitPoint.HealingHitPointItemsFactory;
@@ -26,8 +24,8 @@ public class BigHPBottle implements HealingHitPointItems {
     }
 
     @Override
-    public void use(Human human) {
-        human.setHitPoint(human.getMaxHitPoint());
+    public void use(Character character) {
+        character.setHitPoint(character.getMaxHitPoint());
     }
 
 //    public static HealingItemsFactory healingItemsFactory = new HealingItemsFactory() {

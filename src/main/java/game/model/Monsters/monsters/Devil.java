@@ -1,6 +1,6 @@
 package game.model.Monsters.monsters;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
@@ -23,7 +23,7 @@ public class Devil implements Monster {
     private static List<HealingItems> itemsList;
 
     private int level;
-    private Human human;
+    private Character character;
 
     private int damage;
     private int hitPoint;
@@ -34,12 +34,12 @@ public class Devil implements Monster {
     private final int experience = 100000;
     private final int gold = 100000;
 
-    private Devil(Human human){
-        this.human = human;
-        level = human.getLevel() + 1;
+    private Devil(Character character){
+        this.character = character;
+        level = character.getLevel() + 1;
         hitPoint = (level)*500;
         damage = (level)*100;
-        setEquipmentOfDevil(human);
+        setEquipmentOfDevil(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
     }
@@ -48,8 +48,8 @@ public class Devil implements Monster {
         return damage;
     }
 
-    private void setEquipmentOfDevil(Human human){
-        equipmentOfDevil = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(human);
+    private void setEquipmentOfDevil(Character character){
+        equipmentOfDevil = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(character);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package game.model.traders.traders;
 
-import game.model.Characters.Human;
+import game.model.Characters.Character;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
@@ -36,21 +36,21 @@ public class SimpleTrader implements Trader {
     private Map<Integer, HealingItems> priceListHealingObjects;
 
     /**
-     * Объект типа {@link Human} хранящий в себе имплементацию конкретного персонажа.
+     * Объект типа {@link Character} хранящий в себе имплементацию конкретного персонажа.
      */
-    private Human human;
+    private Character character;
 
     /**
      * Конструктор, инициализирующий map'ы предметов и объект.
      * Также вызывается метод заполняющий map'ы объектами.
      *
-     * @param human
-     *              character implementation of {@link Human}
+     * @param character
+     *              character implementation of {@link Character}
      */
-    private SimpleTrader(Human human){
+    private SimpleTrader(Character character){
         priceListEquipmentObjects = new LinkedHashMap<>();
         priceListHealingObjects = new LinkedHashMap<>();
-        this.human = human;
+        this.character = character;
 
         generatePriceList();
     }
@@ -59,7 +59,7 @@ public class SimpleTrader implements Trader {
      * Метод, заполняющий map'ы предметами и их id.
      */
     private void generatePriceList(){
-        priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBow.itemsFactory.createNewItem(human));
+        priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBow.itemsFactory.createNewItem(character));
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigFlower.healingHitPointItemsFactory.getNewHealingManaPointItem());
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
     }

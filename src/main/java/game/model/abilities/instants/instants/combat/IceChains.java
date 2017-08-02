@@ -14,7 +14,7 @@ public class IceChains implements InstantMagic {
     private int manaCost;
     
     private IceChains(int level){
-        this.level = level + 1;
+        this.level = level;
         this.manaCost = level * 3;
     }
 
@@ -41,7 +41,12 @@ public class IceChains implements InstantMagic {
 
     @Override
     public MagicClasses getMagicClass() {
-        return MagicClasses.INSTANT;
+        return MagicClasses.COMBAT;
+    }
+
+    @Override
+    public String toString(){
+        return this.getClass().getSimpleName();
     }
 
     public static MagicFactory magicFactory = IceChains::new;

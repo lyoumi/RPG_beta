@@ -8,24 +8,24 @@ import game.model.abilities.buffs.BuffMagic;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArmorBuff implements BuffMagic {
+public class DragonForm implements BuffMagic {
 
-    private final int power;
-    private final int defence;
     private int level;
+    private int manaCost;
+    private int power = 10;
+    private int defence = 50;
 
-    private ArmorBuff(int level) {
-        this.power = 7;
-        this.defence = 10;
+    private DragonForm(int level) {
         this.level = level;
+        this.manaCost = getLevel()*7;
     }
 
     @Override
     public Map<BuffClasses, Integer> getEffect() {
-        Map<BuffClasses, Integer> effect = new HashMap<>();
-        effect.put(BuffClasses.defence, defence);
-        effect.put(BuffClasses.power, power);
-        return effect;
+        Map<BuffClasses, Integer> effects = new HashMap<>();
+        effects.put(BuffClasses.power, power);
+        effects.put(BuffClasses.defence, defence);
+        return effects;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ArmorBuff implements BuffMagic {
 
     @Override
     public int getManaCost() {
-        return 0;
+        return manaCost;
     }
 
     @Override
@@ -48,5 +48,5 @@ public class ArmorBuff implements BuffMagic {
         return this.getClass().getSimpleName();
     }
 
-    public static MagicFactory magicFactory = ArmorBuff::new;
+    public static MagicFactory magicFactory = DragonForm::new;
 }
