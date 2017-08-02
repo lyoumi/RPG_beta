@@ -56,7 +56,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     private final int multiplierIntelligence = 5;
     private final int multiplierPower = 7;
     private int gold = 0;
-    private int count;
+    private int count = 0;
     private BuffMagic buffMagic;
 
     private Berserk(){
@@ -312,6 +312,7 @@ public class Berserk implements Character, UsingItems, Equipment {
 
     @Override
     public int getDamage() {
+        if (count > 0) count--;
         if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
         else return getBaseDamage();
     }

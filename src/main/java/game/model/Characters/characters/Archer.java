@@ -56,7 +56,7 @@ public class Archer implements Character, UsingItems, Equipment{
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 6;
     private int gold = 0;
-    private int count;
+    private int count = 0;
     private BuffMagic buffMagic;
 
     private Archer(){
@@ -316,6 +316,7 @@ public class Archer implements Character, UsingItems, Equipment{
 
     @Override
     public int getDamage() {
+        if (count > 0) count--;
         if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
         else return getBaseDamage();
     }

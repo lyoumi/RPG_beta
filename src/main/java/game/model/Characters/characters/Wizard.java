@@ -53,7 +53,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 5;
     private int gold = 0;
-    private int count;
+    private int count = 0;
     private BuffMagic buffMagic;
 
     private Wizard(){
@@ -308,6 +308,7 @@ public class Wizard implements Character, Equipment, UsingItems {
 
     @Override
     public int getDamage() {
+        if (count > 0) count--;
         if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
         else return getBaseDamage();
     }
