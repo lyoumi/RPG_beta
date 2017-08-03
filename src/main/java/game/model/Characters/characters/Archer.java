@@ -454,7 +454,7 @@ public class Archer implements Character, UsingItems, Equipment{
     @Override
     public String toString(){
         return "Class: " + this.getClass().getSimpleName() +
-                " - " + getName() +
+                " " + getName() +
                 "; HP " + String.valueOf(getHitPoint()) +
                 "; MP " + getManaPoint() +
                 "; DMG: " + getDamage() +

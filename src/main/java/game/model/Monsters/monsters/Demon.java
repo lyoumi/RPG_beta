@@ -6,6 +6,7 @@ import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Monsters.Monster;
 import game.model.Monsters.MonsterFactory;
+import game.model.Monsters.MonsterNames;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.abilities.Magic;
 import game.model.abilities.debuffs.DebuffMagic;
@@ -34,8 +35,10 @@ public class Demon implements Monster {
 
     private final int experience = 100;
     private final int gold = 50;
+    private final String name;
 
     private DebuffMagic debuffMagic;
+
 
     private Demon(Character character){
         this.character = character;
@@ -45,6 +48,8 @@ public class Demon implements Monster {
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
+        List<MonsterNames> names = Collections.unmodifiableList(Arrays.asList(MonsterNames.values()));
+        this.name = names.get(random.nextInt(names.size())).toString();
     }
 
 
@@ -131,8 +136,10 @@ public class Demon implements Monster {
         return gold;
     }
 
+    private String getName(){return name;}
+
     public String toString(){
-        return "Name: " + Demon.class.getSimpleName() + "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return Demon.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
     }
 
     public static MonsterFactory monsterFactory = Demon::new;

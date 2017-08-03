@@ -33,6 +33,7 @@ public class Devil implements Monster {
 
     private final int experience = 100000;
     private final int gold = 100000;
+    private final String name;
 
     private Devil(Character character){
         this.character = character;
@@ -42,6 +43,7 @@ public class Devil implements Monster {
         setEquipmentOfDevil(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
+        name = "Satan";
     }
 
     private int getDamage(){
@@ -116,8 +118,10 @@ public class Devil implements Monster {
         return gold;
     }
 
+    private String getName(){return name;}
+
     public String toString(){
-        return Devil.class.getSimpleName() +": HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
+        return Devil.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " +": HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
     }
 
     public static MonsterFactory monsterFactory = Devil::new;

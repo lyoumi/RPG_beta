@@ -8,6 +8,7 @@ import game.model.Items.items.armors.Armor;
 import game.model.Items.items.weapons.Weapons;
 import game.model.Monsters.Monster;
 import game.model.Monsters.MonsterFactory;
+import game.model.Monsters.MonsterNames;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.abilities.Magic;
 import game.model.abilities.debuffs.DebuffMagic;
@@ -32,6 +33,7 @@ public class LegionnaireOfDarkness implements Monster {
 
     private final int experience = 1000;
     private final int gold = 1000;
+    private final String name;
 
     private Map<EquipmentItems, Item> equipmentOfDemon;
 
@@ -45,6 +47,8 @@ public class LegionnaireOfDarkness implements Monster {
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
+        List<MonsterNames> monsterNames = Collections.unmodifiableList(Arrays.asList(MonsterNames.values()));
+        this.name = monsterNames.get(random.nextInt(monsterNames.size())).toString();
     }
 
     private void setEquipmentOfDemon(Character character) {
@@ -149,8 +153,10 @@ public class LegionnaireOfDarkness implements Monster {
         return gold;
     }
 
+    private String getName(){return name;}
+
     public String toString(){
-        return "Name: " + LegionnaireOfDarkness.class.getSimpleName() + "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return LegionnaireOfDarkness.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
     }
 
     public static MonsterFactory monsterFactory = LegionnaireOfDarkness::new;
