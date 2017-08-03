@@ -1,6 +1,7 @@
 package game.model.Monsters.monsters;
 
 import game.model.Characters.Character;
+import game.model.Characters.characters.Berserk;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
@@ -41,7 +42,8 @@ public class LegionnaireOfDarkness implements Monster {
 
     private LegionnaireOfDarkness(Character character){
         this.character = character;
-        level = character.getLevel() + 1;
+        if (character instanceof Berserk) level = character.getLevel() + 4;
+        else level = character.getLevel() + 1;
         hitPoint = (level)*70;
         damage = (level)*20;
         setEquipmentOfDemon(character);
