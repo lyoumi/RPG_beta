@@ -54,10 +54,10 @@ public class PlayerController {
             System.out.println("\nBattle began with " + monster);
 
             String resultOfBattle = manualBattle(character, monster);
-            System.out.println(resultOfBattle);
             endEvent(character, monster, false);
-
+            System.out.println(resultOfBattle);
             nextChoice(character);
+
         }
     }
 
@@ -77,19 +77,19 @@ public class PlayerController {
             switch (s) {
                 case "use item":
                     useItem(character);
-                    break choice;
+                    break;
                 case "walking":
                     String endOfWalk = walking(character);
                     System.out.println(endOfWalk);
-                    break choice;
+                    break;
                 case "auto-battle":
                     autoBattle(character);
-                    break choice;
+                    break;
                 case "continue":
                     break choice;
                 case "market":
                     trader(character);
-                    break choice;
+                    break;
                 case "stop":
                     exit();
                     break;
@@ -197,7 +197,7 @@ public class PlayerController {
                             trader.getPriceListEquipmentObjects().entrySet()) {
                         System.out.println("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue());
                     }
-                    System.out.println("Pls, make your choice....");
+                    System.out.println("Pls, make your choice or enter 0 for exit....");
                     while(true){
                         System.out.println("Pls, enter id....");
                         int id = scanner.nextInt();
@@ -207,7 +207,8 @@ public class PlayerController {
                                 ((Equipment) character).equip(trader.getEquipmentItem(id));
                             } else System.out.println("Not enough of money!");
                             break;
-                        } else System.out.println("Pls, enter a correct id");
+                        } else if (id == 0) break;
+                        else System.out.println("Pls, enter a correct id");
                     }
                     break;
                 }
@@ -217,7 +218,7 @@ public class PlayerController {
                         System.out.println("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue());
                     }
                     while(true){
-                        System.out.println("Pls, enter id....");
+                        System.out.println("Pls, enter id or enter 0 for exit....");
                         int id = scanner.nextInt();
                         if (trader.getPriceListHealingObjects().containsKey(id)){
                             System.out.println("Enter count....");
@@ -227,7 +228,8 @@ public class PlayerController {
                                 ((UsingItems) character).addAll(trader.getHealItems(count, (id)));
                             } else System.out.println("Not enough of money!");
                             break;
-                        } else System.out.println("Pls, enter a correct id");
+                        } else if (id == 0) break;
+                        else System.out.println("Pls, enter a correct id");
                     }
                     break;
                 }
@@ -446,33 +448,42 @@ public class PlayerController {
         else{
             if (!Objects.equals(monster.getDroppedItems(), null)){
                 Map<EquipmentItems, Item> droppedEquipment = monster.getDroppedItems();
-                System.out.println("You have found " + monster.getDroppedGold());
+                System.out.println("You have found " + monster.getDroppedGold() + "G");
                 character.setGold(character.getGold() + monster.getDroppedGold());
                 System.out.println("Your equipment " + ((Equipment) character).showEquipment());
                 System.out.println("Pls, choose equipment or equip all....");
                 System.out.println(droppedEquipment);
-                String equipAll = scanner.nextLine();
-                if (Objects.equals(equipAll, "equip all"))
-                    for (Map.Entry<EquipmentItems, Item> entry : droppedEquipment.entrySet()) {
-                        ((Equipment) character).equip(entry.getValue());
-                    }
-                else
+                System.out.println("Equip all, or manual?");
+                String equipAll;
                 while (true){
-                    System.out.println("Your equipment " + ((Equipment) character).showEquipment());
-                    System.out.println("Pls, choose equipment....");
-                    System.out.println(droppedEquipment);
-                    String key;
-                    List <String> list = Arrays.asList("HEAD", "HANDS", "LEGS", "ARMOR");
-                    while (true){
-                        key = scanner.nextLine();
-                        if (list.contains(key)) break;
-                        else System.out.println("Pls, enter another key....");
-                    }
-                    ((Equipment) character).equip(droppedEquipment.get(EquipmentItems.valueOf(key)));
-                    droppedEquipment.remove((EquipmentItems.valueOf(key)));
-                    System.out.println("Equip more?");
-                    if (Objects.equals(scanner.nextLine(), "No") || droppedEquipment.isEmpty()) break;
+                    equipAll = scanner.nextLine();
+                    if (Objects.equals(equipAll, "equip all")){
+                        for (Map.Entry<EquipmentItems, Item> entry : droppedEquipment.entrySet()) {
+                            ((Equipment) character).equip(entry.getValue());
+                        }
+                        break;
+                    } else if (Objects.equals(equipAll, "manual")){
+                        break;
+                    } else System.out.println("Pls, make correct choice....");
                 }
+
+                if (Objects.equals(equipAll, "manual"))
+                    while (true){
+                        System.out.println("Your equipment " + ((Equipment) character).showEquipment());
+                        System.out.println("Pls, choose equipment....");
+                        System.out.println(droppedEquipment);
+                        String key;
+                        List <String> list = Arrays.asList("HEAD", "HANDS", "LEGS", "ARMOR");
+                        while (true){
+                            key = scanner.nextLine();
+                            if (list.contains(key)) break;
+                            else System.out.println("Pls, enter another key....");
+                        }
+                        ((Equipment) character).equip(droppedEquipment.get(EquipmentItems.valueOf(key)));
+                        droppedEquipment.remove((EquipmentItems.valueOf(key)));
+                        System.out.println("Equip more?");
+                        if (Objects.equals(scanner.nextLine(), "No") || droppedEquipment.isEmpty()) break;
+                    }
             }
             character.experienceDrop(monster.getExperience());
             System.out.println("You can add to your inventory " + monster.getInventory());

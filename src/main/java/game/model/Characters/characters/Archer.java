@@ -420,7 +420,7 @@ public class Archer implements Character, UsingItems, Equipment{
                     updateStats();
                 }
             } else {
-                System.err.println(weapon.getName() + " equipped");
+                System.out.println(weapon.getName() + " equipped");
                 equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
                 updateStats();
             }

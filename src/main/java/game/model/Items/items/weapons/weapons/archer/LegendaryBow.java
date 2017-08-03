@@ -16,6 +16,7 @@ public class LegendaryBow implements Weapons {
     private Character character;
     private Magic buff;
     private Magic magic;
+    private final int price = 1000;
 
     private Random random = new Random();
 
@@ -54,7 +55,7 @@ public class LegendaryBow implements Weapons {
 
     @Override
     public int getPrice() {
-        return 0;
+        return price;
     }
 
     @Override
