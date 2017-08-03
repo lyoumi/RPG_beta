@@ -169,8 +169,7 @@ public class PlayerController {
                                 if (!autoHeal(character)) break;
                             punch(character, monster);
                             if (monster.isDead()) break;
-                            if (monster instanceof Devil)
-                                System.out.println(character);
+                            if (monster instanceof Devil) System.out.println(character);
                         } while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
                         endEvent(character, monster, true);
                         checkNewMagicPoint(character);
@@ -332,8 +331,6 @@ public class PlayerController {
      *          Character implementation of {@link Character}
      * @param monster
      *          Monster implementation of {@link Monster}
-     * @return
-     *          boolean result of punch
      */
     private void punch(Character character, Monster monster){
         System.out.println(monster);
@@ -370,7 +367,6 @@ public class PlayerController {
             }
         } else return false;
     }
-
 
 
     /**

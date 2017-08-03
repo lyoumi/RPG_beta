@@ -377,39 +377,6 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     @Override
-    public void equip(Item item) {
-        if (item.EQUIPMENT_ITEMS().equals(EquipmentItems.HANDS)){
-            weapon = (Weapons) item;
-            Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
-            if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
-                if (weapon.getDamage() > usingWeapon.getDamage()){
-                    System.err.println(weapon.getName() + " equipped");
-                    equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
-                    updateStats();
-                }
-            } else {
-                System.err.println(weapon.getName() + " equipped");
-                equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
-                updateStats();
-            }
-        } else {
-            armor = (Armor) item;
-            Armor usingArmor = (Armor)equipmentItems.get(item.EQUIPMENT_ITEMS());
-            if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
-                if (armor.getDefence() > usingArmor.getDefence()){
-                    System.err.println(armor.getName() + " equipped");
-                    equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
-                    updateStats();
-                }
-            } else {
-                System.err.println(armor.getName() + " equipped");
-                equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
-                updateStats();
-            }
-        }
-    }
-
-    @Override
     public boolean healHitPoint() {
         return isHealingBigHitPointBottle() || isHealingMiddleHitPointBottle() || isHealingSmallHitPointBottle();
     }
@@ -437,6 +404,39 @@ public class Wizard implements Character, Equipment, UsingItems {
             if (item instanceof HealingManaPointItems) return true;
         }
         return false;
+    }
+
+    @Override
+    public void equip(Item item) {
+        if (item.EQUIPMENT_ITEMS().equals(EquipmentItems.HANDS)){
+            weapon = (Weapons) item;
+            Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
+            if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
+                if (weapon.getDamage() > usingWeapon.getDamage()){
+                    System.out.println(weapon.getName() + " equipped");
+                    equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
+                    updateStats();
+                }
+            } else {
+                System.out.println(weapon.getName() + " equipped");
+                equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
+                updateStats();
+            }
+        } else {
+            armor = (Armor) item;
+            Armor usingArmor = (Armor)equipmentItems.get(item.EQUIPMENT_ITEMS());
+            if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
+                if (armor.getDefence() > usingArmor.getDefence()){
+                    System.out.println(armor.getName() + " equipped");
+                    equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
+                    updateStats();
+                }
+            } else {
+                System.out.println(armor.getName() + " equipped");
+                equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
+                updateStats();
+            }
+        }
     }
 
     @Override
