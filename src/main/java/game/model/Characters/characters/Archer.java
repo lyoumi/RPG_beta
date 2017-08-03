@@ -23,9 +23,6 @@ import game.model.abilities.MagicClasses;
 import game.model.abilities.buffs.BuffClasses;
 import game.model.abilities.buffs.BuffMagic;
 import game.model.abilities.instants.InstantMagic;
-import game.model.abilities.instants.instants.combat.FireBall;
-import game.model.abilities.instants.instants.combat.IceChains;
-import game.model.abilities.instants.instants.healing.SmallHealing;
 
 import java.util.*;
 
@@ -55,6 +52,7 @@ public class Archer implements Character, UsingItems, Equipment{
     private final int multiplierAgility = 2;
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 6;
+    private int expToNextLevel = 3000;
     private int gold = 0;
     private int count = 0;
     private BuffMagic buffMagic;
@@ -77,7 +75,7 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private boolean expToNextLevelReady(){
-        return getExperience() >= ((level+1)*1500);
+        return getExperience() >= expToNextLevel;
     }
 
     private double getExperience() {
@@ -90,12 +88,13 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private double expToNextLevel() {
-        return (((getLevel()+1)*1500) - getExperience());
+        return (expToNextLevel - getExperience());
     }
 
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
+            expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
             System.out.println("Congratulation with level: " + level);
             setMagicPoint(getMagicPoint() + 1);
             System.out.println();

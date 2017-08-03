@@ -23,7 +23,7 @@ public enum MonsterNames {
     Crash,
     Dante,
     DartWayder,
-    DarcSaid,
+    DarcSeid,
     DarcwingDuck,
     Deadshot,
     Donny,

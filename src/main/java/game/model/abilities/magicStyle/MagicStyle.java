@@ -14,6 +14,9 @@ import game.model.abilities.instants.instants.healing.SmallHealing;
 
 import java.util.ArrayList;
 
+/**
+ * Класс, дающий персонажу соответствующий его классу набор магий.
+ */
 public class MagicStyle {
     public static ArrayList<Magic> getMagicStyle(Character character){
         ArrayList<Magic> listOfMagic = new ArrayList<>();

@@ -20,7 +20,7 @@ import game.model.abilities.instants.instants.combat.FireBall;
 
 import java.util.*;
 
-public class LegionnaireOfDarkness implements Monster {
+public class MediumBot implements Monster {
     private static final Random random = new Random();
     private static List<HealingItems> itemsList;
     private static int sizeOfItems;
@@ -40,7 +40,7 @@ public class LegionnaireOfDarkness implements Monster {
 
     private DebuffMagic debuffMagic;
 
-    private LegionnaireOfDarkness(Character character){
+    private MediumBot(Character character){
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
@@ -158,8 +158,8 @@ public class LegionnaireOfDarkness implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return LegionnaireOfDarkness.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return MediumBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
     }
 
-    public static MonsterFactory monsterFactory = LegionnaireOfDarkness::new;
+    public static MonsterFactory monsterFactory = MediumBot::new;
 }

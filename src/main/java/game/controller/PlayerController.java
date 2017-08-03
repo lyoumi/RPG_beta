@@ -11,14 +11,12 @@ import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
-import game.model.Monsters.monsters.Demon;
-import game.model.Monsters.monsters.Devil;
-import game.model.Monsters.monsters.LegionnaireOfDarkness;
+import game.model.Monsters.monsters.EasyBot;
+import game.model.Monsters.monsters.Boss;
+import game.model.Monsters.monsters.MediumBot;
 import game.model.abilities.Magic;
 import game.model.abilities.MagicClasses;
-import game.model.abilities.instants.instants.InstantMagic;
-import game.model.abilities.instants.instants.combat.FireBall;
-import game.model.abilities.instants.instants.combat.IceChains;
+import game.model.abilities.instants.InstantMagic;
 import game.model.abilities.instants.instants.healing.SmallHealing;
 import game.model.abilities.magicStyle.MagicStyle;
 import game.model.traders.Trader;
@@ -162,14 +160,14 @@ public class PlayerController {
                     if (random.nextInt(10000000) == 9999999){
                         System.out.println("\n");
                         Monster monster = spawn(character);
-                        if (monster instanceof Devil)
+                        if (monster instanceof Boss)
                             System.out.println(monster);
                         do {
                             if (character.getHitPoint() <= character.getMaxHitPoint()/2)
                                 if (!autoHeal(character)) break;
                             punch(character, monster);
                             if (monster.isDead()) break;
-                            if (monster instanceof Devil) System.out.println(character);
+                            if (monster instanceof Boss) System.out.println(character);
                         } while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
                         endEvent(character, monster, true);
                         checkNewMagicPoint(character);
@@ -247,21 +245,19 @@ public class PlayerController {
      */
     private void checkNewMagicPoint(Character character){
         while (character.getMagicPoint() != 0){
-            System.out.println("You can upgrade your skills " + Arrays.toString(InstantMagic.values()));
+            System.out.println(character.getMagicPoint());
+            System.out.println("You can upgrade your skills " + (MagicStyle.getMagicStyle(character)) + " by index...");
             String choice = scanner.nextLine();
-            if (Objects.equals(choice, "FireBall")){
-                FireBall fireBall = (FireBall) FireBall.magicFactory.getMagicFactory(character.getLevel());
-                fireBall.setDamage();
-                character.setMagicPoint(character.getMagicPoint() - 1);
-                break;
-            } else if (Objects.equals(choice, "IceChains")){
-                IceChains iceChains = (IceChains) IceChains.magicFactory.getMagicFactory(character.getLevel());
-                iceChains.setDamage();
-                character.setMagicPoint(character.getMagicPoint() - 1);
-                break;
-            } else {
-                System.out.println("Wrong value");
-            }
+            if (choice.equals("1")||choice.equals("2")||choice.equals("3")) {
+                Integer c = Integer.valueOf(choice);
+                c = --c;
+                if (MagicStyle.getMagicStyle(character).get(c).getMagicClass().equals(MagicClasses.COMBAT)){
+                    ((InstantMagic)MagicStyle.getMagicStyle(character).get(c)).setDamage();
+                    character.setMagicPoint(character.getMagicPoint()-1);
+                    System.out.println(MagicStyle.getMagicStyle(character).get(c) + " was upgraded");
+                    break;
+                } else System.out.println("This magic not upgradable, make another choice...");
+            } else System.out.println("Wrong value...");
         }
     }
 
@@ -278,8 +274,9 @@ public class PlayerController {
         System.out.println("Select magic: " + magics);
         while (true) {
             String magicChoice = scanner.nextLine();
-            if (magicChoice.equals("0")||magicChoice.equals("1")||magicChoice.equals("2")){
+            if (magicChoice.equals("1")||magicChoice.equals("2")||magicChoice.equals("3")){
                 int mc = Integer.valueOf(magicChoice);
+                mc = --mc;
                 if ((mc < magics.size()) && (mc >= 0)) {
                     Magic magic = magics.get(mc);
                     if (magic.getMagicClass().equals(MagicClasses.COMBAT)){
@@ -501,9 +498,9 @@ public class PlayerController {
      */
     private Monster spawn(Character character) {
         int chance = random.nextInt(100);
-        if (character.getLevel()%25 == 0) return Devil.monsterFactory.createNewMonster(character);
-        else if ((chance > 0)&&(chance < 25)) return LegionnaireOfDarkness.monsterFactory.createNewMonster(character);
-        else return Demon.monsterFactory.createNewMonster(character);
+        if (character.getLevel()%25 == 0) return Boss.monsterFactory.createNewMonster(character);
+        else if ((chance > 0)&&(chance < 25)) return MediumBot.monsterFactory.createNewMonster(character);
+        else return EasyBot.monsterFactory.createNewMonster(character);
     }
 
 

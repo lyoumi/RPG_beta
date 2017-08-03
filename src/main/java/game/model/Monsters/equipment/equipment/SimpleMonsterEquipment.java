@@ -18,9 +18,9 @@ import game.model.Items.items.heal.healManaPoint.items.SmallFlower;
 import game.model.Items.items.weapons.weapons.archer.Bow;
 import game.model.Items.items.weapons.weapons.archer.LegendaryBow;
 import game.model.Items.items.weapons.weapons.archer.Sword;
-import game.model.Items.items.weapons.weapons.berserk.BoxGloves;
+import game.model.Items.items.weapons.weapons.berserk.BoxingGloves;
 import game.model.Items.items.weapons.weapons.berserk.Gloves;
-import game.model.Items.items.weapons.weapons.berserk.LegendaryBoxGloves;
+import game.model.Items.items.weapons.weapons.berserk.LegendaryBoxingGloves;
 import game.model.Items.items.weapons.weapons.wizard.LegendaryStaff;
 import game.model.Items.items.weapons.weapons.wizard.MagicWand;
 import game.model.Items.items.weapons.weapons.wizard.Staff;
@@ -48,9 +48,9 @@ public class SimpleMonsterEquipment implements MonsterEquipment {
                 equipment.put(Sword.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Sword.itemsFactory.createNewItem(character));
         } else if (character instanceof Berserk){
             if(i == 9)
-                equipment.put(LegendaryBoxGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), LegendaryBoxGloves.itemsFactory.createNewItem(character));
+                equipment.put(LegendaryBoxingGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), LegendaryBoxingGloves.itemsFactory.createNewItem(character));
             else if ((i > 0) && (i < 3))
-                equipment.put(BoxGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), BoxGloves.itemsFactory.createNewItem(character));
+                equipment.put(BoxingGloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), BoxingGloves.itemsFactory.createNewItem(character));
             else
                 equipment.put(Gloves.itemsFactory.createNewItem(character).EQUIPMENT_ITEMS(), Gloves.itemsFactory.createNewItem(character));
         } else {

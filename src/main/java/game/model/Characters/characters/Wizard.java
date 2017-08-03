@@ -52,6 +52,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     private final int multiplierAgility = 2;
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 5;
+    private int expToNextLevel = 3000;
     private int gold = 0;
     private int count = 0;
     private BuffMagic buffMagic;
@@ -74,7 +75,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     private boolean expToNextLevelReady(){
-        return getExperience() >= ((level+1)*1500);
+        return getExperience() >= expToNextLevel;
     }
 
     private double getExperience() {
@@ -87,17 +88,18 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     private double expToNextLevel() {
-        return (((getLevel()+1)*1500) - getExperience());
+        return (expToNextLevel - getExperience());
     }
 
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
+            expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
             System.out.println("Congratulation with level: " + level);
             setMagicPoint(getMagicPoint() + 1);
             System.out.println();
-            setAgility(getAgility()+3);
-            setIntelligence(getIntelligence()+2);
+            setAgility(getAgility()+1);
+            setIntelligence(getIntelligence()+4);
             setPower(getPower()+2);
             updateStats();
             System.out.println(this);

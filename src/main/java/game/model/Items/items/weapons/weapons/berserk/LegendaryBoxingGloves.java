@@ -9,7 +9,7 @@ import game.model.abilities.buffs.buffs.BerserkBuff;
 
 import java.util.Random;
 
-public class LegendaryBoxGloves implements Weapons{
+public class LegendaryBoxingGloves implements Weapons{
     private int damage;
     private int itemLevel;
     private Character character;
@@ -18,7 +18,7 @@ public class LegendaryBoxGloves implements Weapons{
 
     private Random random = new Random();
 
-    private LegendaryBoxGloves(Character character){
+    private LegendaryBoxingGloves(Character character){
         this.character = character;
         this.itemLevel = random.nextInt(character.getLevel() + 1);
         this.price = 100* getItemLevel();
@@ -53,7 +53,7 @@ public class LegendaryBoxGloves implements Weapons{
 
     @Override
     public String getName() {
-        return LegendaryBoxGloves.class.getSimpleName();
+        return LegendaryBoxingGloves.class.getSimpleName();
     }
 
     @Override
@@ -61,5 +61,5 @@ public class LegendaryBoxGloves implements Weapons{
         return getName() + ": " + " ATK +" + getDamage();
     }
 
-    public static ItemsFactory itemsFactory = LegendaryBoxGloves::new;
+    public static ItemsFactory itemsFactory = LegendaryBoxingGloves::new;
 }

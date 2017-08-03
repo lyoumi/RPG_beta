@@ -156,11 +156,35 @@ public interface Character {
      */
     int getMagic(Magic magic);
 
+    /**
+     * Метод, реализующий восстановление здоровья.
+     *
+     * @return
+     *          result of healing.
+     */
     boolean healHitPoint();
 
+    /**
+     * Метод, реализующий восстановление маны.
+     *
+     * @return
+     *          result of healing.
+     */
     boolean healManaPoint();
 
+    /**
+     * Проверка на наличие предметов для восстановления здоровья.
+     *
+     * @return
+     *          boolean result.
+     */
     boolean checkHitPointBottle();
 
+    /**
+     * Проверка на наличие предметов для восстановления маны.
+     *
+     * @return
+     *          boolean result.
+     */
     boolean checkManaPointBottle();
 }

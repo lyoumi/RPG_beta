@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Created by pikachu on 13.07.17.
  */
-public class Demon implements Monster {
+public class EasyBot implements Monster {
 
     private static Random random = new Random();
     private static int sizeOfItems;
@@ -41,7 +41,7 @@ public class Demon implements Monster {
     private DebuffMagic debuffMagic;
 
 
-    private Demon(Character character){
+    private EasyBot(Character character){
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
@@ -141,8 +141,8 @@ public class Demon implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return Demon.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return EasyBot.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
     }
 
-    public static MonsterFactory monsterFactory = Demon::new;
+    public static MonsterFactory monsterFactory = EasyBot::new;
 }

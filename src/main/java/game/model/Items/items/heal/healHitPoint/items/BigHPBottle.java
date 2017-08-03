@@ -28,13 +28,6 @@ public class BigHPBottle implements HealingHitPointItems {
         character.setHitPoint(character.getMaxHitPoint());
     }
 
-//    public static HealingItemsFactory healingItemsFactory = new HealingItemsFactory() {
-//        @Override
-//        public HealingHitPointItems getHealingItem() {
-//            return new BigHPBottle();
-//        }
-//    };
-
     public static HealingHitPointItemsFactory healingHitPointItemsFactory = BigHPBottle::new;
 
     public String toString(){

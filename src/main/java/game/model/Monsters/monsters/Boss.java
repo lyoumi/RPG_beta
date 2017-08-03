@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Devil implements Monster {
+public class Boss implements Monster {
 
     private static final Random random = new Random();
     private static int sizeOfItems;
@@ -36,7 +36,7 @@ public class Devil implements Monster {
     private final int gold = 100000;
     private final String name;
 
-    private Devil(Character character){
+    private Boss(Character character){
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
@@ -123,8 +123,8 @@ public class Devil implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return Devil.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " +": HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
+        return Boss.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " +": HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
     }
 
-    public static MonsterFactory monsterFactory = Devil::new;
+    public static MonsterFactory monsterFactory = Boss::new;
 }
