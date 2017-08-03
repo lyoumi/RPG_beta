@@ -25,7 +25,7 @@ public class MagicStyle {
         } else if (character instanceof Berserk){
             listOfMagic.add(DragonBall.magicFactory.getMagicFactory(character.getLevel()));
             listOfMagic.add(DragonForm.magicFactory.getMagicFactory(character.getLevel()));
-            listOfMagic.add(ForceOfJedi.magicFactory.getMagicFactory(character.getLevel()));
+            listOfMagic.add(SmallHealing.magicFactory.getMagicFactory(character.getLevel()));
             return listOfMagic;
         } else {
             listOfMagic.add(WindsOfWinter.magicFactory.getMagicFactory(character.getLevel()));

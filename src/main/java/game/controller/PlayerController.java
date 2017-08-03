@@ -275,7 +275,6 @@ public class PlayerController {
      *          Monster implementation of {@link Monster}
      */
     private void useMagic(Character character, Monster monster){
-//        ArrayList<Magic> magics = MagicStyle.getMagicStyle(character)
         ArrayList<Magic> magics = MagicStyle.getMagicStyle(character);
         System.out.println("Select magic: " + magics);
         while (true) {
@@ -292,34 +291,11 @@ public class PlayerController {
                         character.setHitPoint(character.getHitPoint() + character.getMagic(magic));
                         break;
                     } else {
-
+                        character.getMagic(magic);
                     }
                 }
             } else System.out.println("Pls, enter correct index");
         }
-
-
-//        System.out.println("Select magic: " + Arrays.toString(InstantMagic.values()));
-//        choice:
-//        while(true){
-//            String magicChoice = scanner.nextLine();
-//            switch (magicChoice){
-//                case "FireBall":
-//                    Magic combatMagic = FireBall.magicFactory.getMagicFactory(character.getLevel());
-//                    monster.setDebuff(combatMagic);
-//                    monster.setHitPoint(monster.getHitPoint() - monster.applyDamage(character.getMagic(combatMagic)));
-//                    break choice;
-//                case "SmallHealing":
-//                    Magic healingMagic = SmallHealing.magicFactory.getMagicFactory(character.getMaxHitPoint());
-//                    character.setHitPoint(character.getHitPoint() + character.getMagic(healingMagic));
-//                    break choice;
-//                case "IceChains":
-//                    Magic disableMagic = IceChains.magicFactory.getMagicFactory(character.getLevel());
-//                    monster.setDebuff(disableMagic);
-//                    monster.setHitPoint(monster.getHitPoint() - monster.applyDamage(character.getMagic(disableMagic)));
-//                    break choice;
-//            }
-//        }
     }
 
     /**

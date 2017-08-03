@@ -240,6 +240,7 @@ public class Wizard implements Character, Equipment, UsingItems {
 
     private void activateBuff(Magic magic){
         buffMagic = (BuffMagic) magic;
+        updateStats();
         count = 6;
     }
 

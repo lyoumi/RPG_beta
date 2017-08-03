@@ -243,6 +243,7 @@ public class Berserk implements Character, UsingItems, Equipment {
 
     private void activateBuff(Magic magic){
         buffMagic = (BuffMagic) magic;
+        updateStats();
         count = 6;
     }
 
