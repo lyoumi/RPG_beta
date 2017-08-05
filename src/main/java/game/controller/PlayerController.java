@@ -750,7 +750,7 @@ public class PlayerController{
             Platform.runLater(() -> {
                 viewLevel.setText("LVL: " + character.getLevel());
                 viewName.setText("NAME: " + character.getName());
-                viewExp.setText(String.valueOf(character.expToNextLevel()));
+                viewExp.setText("Exp last: " + String.valueOf((int)character.expToNextLevel()));
                 viewHitPoint.setText("HP: " + character.getHitPoint());
                 viewManaPoint.setText("MP: " + character.getManaPoint());
                 viewGold.setText("GOLD: " + character.getGold());
