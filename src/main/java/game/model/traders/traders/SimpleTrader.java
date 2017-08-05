@@ -1,11 +1,15 @@
 package game.model.traders.traders;
 
 import game.model.Characters.Character;
+import game.model.Characters.characters.Archer;
+import game.model.Characters.characters.Berserk;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
 import game.model.Items.items.heal.healManaPoint.items.BigFlower;
 import game.model.Items.items.weapons.weapons.archer.LegendaryBow;
+import game.model.Items.items.weapons.weapons.berserk.LegendaryBoxingGloves;
+import game.model.Items.items.weapons.weapons.wizard.LegendaryStaff;
 import game.model.traders.Trader;
 import game.model.traders.TradersFactory;
 import lib.RandomUniqueValue;
@@ -59,7 +63,9 @@ public class SimpleTrader implements Trader {
      * Метод, заполняющий map'ы предметами и их id.
      */
     private void generatePriceList(){
-        priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBow.itemsFactory.createNewItem(character));
+        if (character instanceof Archer) priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBow.itemsFactory.createNewItem(character));
+        else if (character instanceof Berserk) priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryBoxingGloves.itemsFactory.createNewItem(character));
+        else priceListEquipmentObjects.put(randomUniqueValue.nextUniqueInt(), LegendaryStaff.itemsFactory.createNewItem(character));
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigFlower.healingHitPointItemsFactory.getNewHealingManaPointItem());
         priceListHealingObjects.put(randomUniqueValue.nextUniqueInt(), BigHPBottle.healingHitPointItemsFactory.getNewHealingHitPointItem());
     }

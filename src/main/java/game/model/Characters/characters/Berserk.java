@@ -48,13 +48,13 @@ public class Berserk implements Character, UsingItems, Equipment {
     private Armor armor;
     private int defence;
     private Magic magic;
-    private int magicPoint = 0;
+    private int magicPoint;
     private final int multiplierAgility = 3;
     private final int multiplierIntelligence = 5;
     private final int multiplierPower = 7;
     private int expToNextLevel = 3000;
-    private int gold = 0;
-    private int count = 0;
+    private int gold;
+    private int count;
     private BuffMagic buffMagic;
 
     private Berserk(){

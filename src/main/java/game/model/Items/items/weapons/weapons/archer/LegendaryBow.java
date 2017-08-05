@@ -16,7 +16,7 @@ public class LegendaryBow implements Weapons {
     private Character character;
     private Magic buff;
     private Magic magic;
-    private final int price = 1000;
+    private final int price;
 
     private Random random = new Random();
 
@@ -24,6 +24,7 @@ public class LegendaryBow implements Weapons {
         this.character = character;
         this.itemLevel = random.nextInt(character.getLevel() + 1) + 5;
         this.damage = getItemLevel() * 9;
+        this.price = 10000 * getItemLevel();
         this.buff = ArchersBuff.magicFactory.getMagicFactory(character.getLevel());
         this.magic = BurningJoe.magicFactory.getMagicFactory(getItemLevel());
     }

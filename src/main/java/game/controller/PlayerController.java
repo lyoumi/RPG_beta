@@ -10,6 +10,7 @@ import game.model.Items.EquipmentItems;
 import game.model.Items.UsingItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
+import game.model.Items.items.heal.HealingItemsList;
 import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.Monsters.monsters.EasyBot;
@@ -25,8 +26,11 @@ import game.model.traders.traders.SimpleTrader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -37,22 +41,26 @@ import java.util.*;
  */
 public class PlayerController{
 
-    public boolean canTakeMessage = false;
+    public boolean canTakeMessage;
 
     private boolean firstTime = true;
     private String choice;
 
     public Text viewName;
+    public Text viewLevel;
     public Text viewHitPoint;
     public Text viewManaPoint;
     public Text viewGold;
     public TextArea inputMessageArea;
-    public VBox messageBox;
     public Button buttonSendMessage;
+    public VBox messageBox;
+    public VBox currentChoiceBox;
+    public VBox itemBox;
+    public VBox equipmentBox;
+    public ScrollPane messageBoxScrollPane;
 
     public class InnerPlayerControllerClass implements Runnable{
 
-        private Scanner scanner = new Scanner(System.in);
         private final Random random = new Random();
         private final List<HealingItems> itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         private final int sizeOfItems = itemsList.size();
@@ -64,7 +72,7 @@ public class PlayerController{
 
         @Override
         public void run() {
-            updateScreen();
+            updateScreen(character);
             beginGame(character);
         }
 
@@ -77,21 +85,19 @@ public class PlayerController{
          * @param character
          *          Character implementation of {@link Character}
          */
-        synchronized void beginGame(Character character){
+        private synchronized void beginGame(Character character){
 
             System.out.println(character);
 
             while (true) {
                 Monster monster = spawn(character);
-                String monsterInfo = "\nBattle began with " + monster;
-                System.out.println(monsterInfo);
+                String monsterInfo = "\n   info: Battle began with " + monster;
                 Text viewMonsterInformation = new Text(monsterInfo);
                 Platform.runLater(() -> messageBox.getChildren().add(viewMonsterInformation));
                 String resultOfBattle = manualBattle(character, monster);
                 endEvent(character, monster, false);
-                Text resultOfBattleView = new Text(resultOfBattle);
+                Text resultOfBattleView = new Text("   info: " + resultOfBattle);
                 Platform.runLater(() -> messageBox.getChildren().add(resultOfBattleView));
-                System.out.println(resultOfBattle);
                 nextChoice(character);
             }
         }
@@ -104,17 +110,18 @@ public class PlayerController{
          * @return
          *              boolean result
          */
-        boolean nextChoice(Character character){
-            Text choice = new Text("What's next: use item for healHitPoint, walking for find new items, \nauto-battle for check your fortune, market for go to shop, \nstop for break adventures or continue....");
-            Platform.runLater(() -> messageBox.getChildren().add(choice));
-            System.out.println("What's next: use item for healHitPoint, walking for find new items, auto-battle for check your fortune, market for go to shop stop for break adventures or continue....");
+        private boolean nextChoice(Character character){
+            Text choice = new Text("\n   info: What's next: use item for healHitPoint, walking for find new items, \n   auto-battle for check your fortune, market for go to shop, \n   stop for break adventures or continue....\n");
+//            System.out.println("What's next: use item for healHitPoint, walking for find new items, auto-battle for check your fortune, market for go to shop stop for break adventures or continue....");
             choice:
             while (true) {
+                updateChoiceBox(" use item", " walking", " auto-battle", " market", " stop", " continue");
+                Platform.runLater(() -> messageBox.getChildren().add(choice));
                 while (!canTakeMessage){
                     System.out.print("");
                 }
-                String s = getChoice();
-                switch (s) {
+                String currentChoice = getChoice();
+                switch (currentChoice) {
                     case "use item":
                         useItem(character);
                         break;
@@ -153,19 +160,18 @@ public class PlayerController{
          * @param monster
          *              Monster implementation of {@link Monster}
          */
-        synchronized String manualBattle(Character character, Monster monster){
+        private synchronized String manualBattle(Character character, Monster monster){
             battle:
             do {
+                updateScreen(character);
                 punch(character, monster);
-                updateScreen();
-                if (monster.isDead()) return "He is dead";
-//                System.out.println(character);
-                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("Choose next turn: use item for healHitPoint, use magic for addition damage, leave battle for alive or continue....")));
-//                System.out.println("Choose next turn: use item for healHitPoint, use magic for addition damage, leave battle for alive or continue....");
+                updateScreen(character);
+                if (monster.isDead()) return "   info: The manualBattle is over";
+//                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
+                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Choose next turn: use item for healHitPoint, use magic for addition damage, leave battle for alive or continue....")));
                 choice:
                 while (true){
-
+                    updateChoiceBox(" use item", " use magic", " leave", " continue");
                     while (!canTakeMessage){
                         System.out.print("");
                     }
@@ -182,13 +188,17 @@ public class PlayerController{
                         case "leave":
                             break battle;
                         default:
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make correct choice....")));
+                            Platform.runLater(() -> {
+                                Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                                notCorrectChoice.setFill(Color.RED);
+                                messageBox.getChildren().add(notCorrectChoice);
+                            });
                             break;
                     }
                 }
             }while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
-            updateScreen();
-            return "The manualBattle is over. Your stats: " + character;
+            updateScreen(character);
+            return "";
         }
 
         /**
@@ -199,34 +209,44 @@ public class PlayerController{
          * @param character
          *          Character implementation of {@link Character}
          */
-        void autoBattle(Character character){
+        private void autoBattle(Character character){
+            updateChoiceBox(" break auto-battle");
             while (!Objects.equals(getChoice(), "break auto-battle")){
                 if (character.getInventory().size() < 5) {
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("I need go walk.... Pls, wait some time, I will be back\n" + character.toString())));
-//                        System.out.println("I need go walk.... Pls, wait some time, I will be back\n" + character);
+                    Platform.runLater(() -> {
+                        Text walkingBeginning = new Text("   info: I need go walk.... Pls, wait some time, I will be back\n" + character.toString());
+                        walkingBeginning.setFill(Color.DARKBLUE);
+                        messageBox.getChildren().add(walkingBeginning);
+                    });
                     String walkingResults = walking(character);
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text(walkingResults)));
-//                        System.out.println(walkingResults);
+                    Platform.runLater(() -> {
+                        Text viewWalkingResult = new Text(walkingResults);
+                        viewWalkingResult.setFill(Color.DARKBLUE);
+                        messageBox.getChildren().add(viewWalkingResult);
+                    });
                 } else{
                     if (random.nextInt(10000000) == 9999999){
                         System.out.println("\n");
                         Monster monster = spawn(character);
-                        if (monster instanceof Boss) {
-                            Text boss = new Text(monster.toString());
-                            Platform.runLater(() -> messageBox.getChildren().add(boss));
-//                                System.out.println(monster);
-                        }
+                        Platform.runLater(() -> {
+                            Text boss = new Text("   info: battle began with " + monster.toString());
+                            boss.setFill(Color.ORANGERED);
+                            messageBox.getChildren().add(boss);
+                        });
                         do {
-                            updateScreen();
-                            if (character.getHitPoint() <= character.getMaxHitPoint()/2)
+                            updateScreen(character);
+                            if (character.getHitPoint() <= character.getMaxHitPoint()/2) {
                                 if (!autoHeal(character)) break;
+                            }
+                            updateScreen(character);
                             punch(character, monster);
                             if (monster.isDead()) break;
-                            if (monster instanceof Boss) {
-                                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
-                                System.out.println(character);
-                            }
+//                            if (monster instanceof Boss) {
+//                                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
+//                                System.out.println(character);
+//                            }
                         } while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
+                        updateScreen(character);
                         endEvent(character, monster, true);
                         checkNewMagicPoint(character);
                     }
@@ -240,12 +260,16 @@ public class PlayerController{
          * @param character
          *              character implementation of {@link Character}
          */
-        void trader(Character character){
+        private void trader(Character character){
             Trader trader = SimpleTrader.tradersFactory.getTrader(character);
             market:
             while(true){
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("\nHello my friend! Look at my priceList: enter equipment, healHitPoint or exit for exit from market....")));
-//                System.out.println("\nHello my friend! Look at my priceList: enter equipment, healHitPoint or exit for exit from market....");
+                Platform.runLater(() -> {
+                    updateChoiceBox(" equipment", " healHitPoint", " exit");
+                    Text viewWelcomeSpeech = new Text("\n   info: Hello my friend! Look at my priceList: enter equipment, healHitPoint or exit for exit from market....");
+                    viewWelcomeSpeech.setFill(Color.BLUEVIOLET);
+                    messageBox.getChildren().add(viewWelcomeSpeech);
+                });
                 while (!canTakeMessage){
                     System.out.print("");
                 }
@@ -254,14 +278,12 @@ public class PlayerController{
                     case "equipment":{
                         for (Map.Entry<Integer, Item> entry :
                                 trader.getPriceListEquipmentObjects().entrySet()) {
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue())));
-//                            System.out.println("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue());
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue())));
                         }
-                        Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make your choice or enter 0 for exit....")));
-//                        System.out.println("Pls, make your choice or enter 0 for exit....");
+                        Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, make your choice or enter 0 for exit....")));
                         while(true){
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, enter id....")));
-//                            System.out.println("Pls, enter id....");
+                            updateChoiceBox(" id", " 0");
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, enter id....")));
                             while (!canTakeMessage){
                                 System.out.print("");
                             }
@@ -270,45 +292,66 @@ public class PlayerController{
                                 if (character.getGold() >= trader.getPriceListEquipmentObjects().get(id).getPrice()){
                                     character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
                                     ((Equipment) character).equip(trader.getEquipmentItem(id));
-                                } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Not enough of money!")));
-//                                    System.out.println("Not enough of money!");
+                                    updateScreen(character);
+                                } else Platform.runLater(() -> {
+                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
+                                    viewNotEnoughOfMoney.setFill(Color.RED);
+                                    messageBox.getChildren().add(viewNotEnoughOfMoney);
+                                });
                                 break;
                             } else if (id == 0) break;
-                            else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, enter correct id....")));
-//                                System.out.println("Pls, enter a correct id");
+                            else Platform.runLater(() -> {
+                                    Text notCorrectId = new Text("   info: Pls, enter correct id....");
+                                    notCorrectId.setFill(Color.RED);
+                                    messageBox.getChildren().add(notCorrectId);
+                                });
                         }
                         break;
                     }
                     case "healHitPoint":{
                         for (Map.Entry<Integer, HealingItems> entry :
                                 trader.getPriceListHealingObjects().entrySet()){
-                            System.out.println("Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue());
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue())));
                         }
                         while(true){
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, enter id or enter 0 for exit....")));
-//                            System.out.println("Pls, enter id or enter 0 for exit....");
+                            updateChoiceBox(" id", " 0");
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, enter id or enter 0 for exit....")));
                             while (!canTakeMessage){
                                 System.out.print("");
                             }
                             int id = Integer.valueOf(getChoice());
                             if (trader.getPriceListHealingObjects().containsKey(id)){
-                                System.out.println("Enter count....");
-                                int count = scanner.nextInt();
+                                updateChoiceBox("count");
+                                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Enter count....")));
+                                while (!canTakeMessage){
+                                    System.out.print("");
+                                }
+                                int count = Integer.valueOf(getChoice());
                                 if (character.getGold() >= trader.getPriceListHealingObjects().get(id).getPrice()*count){
                                     character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
                                     ((UsingItems) character).addAll(trader.getHealItems(count, (id)));
-                                } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Not enough of money!")));
-//                                    System.out.println("Not enough of money!");
+                                    updateScreen(character);
+                                } else Platform.runLater(() -> {
+                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
+                                    viewNotEnoughOfMoney.setFill(Color.RED);
+                                    messageBox.getChildren().add(viewNotEnoughOfMoney);
+                                });
                                 break;
                             } else if (id == 0) break;
-                            else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, enter correct id....")));
-//                                System.out.println("Pls, enter a correct id");
+                            else Platform.runLater(() -> {
+                                    Text notCorrectId = new Text("   info: Pls, enter correct id....");
+                                    notCorrectId.setFill(Color.RED);
+                                    messageBox.getChildren().add(notCorrectId);
+                                });
                         }
                         break;
                     }
                     case "exit": break market;
-                    default: Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make the correct choice....")));
-//                        System.out.println("Pls, make a correct choice....");
+                    default: Platform.runLater(() -> {
+                        Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                        notCorrectChoice.setFill(Color.RED);
+                        messageBox.getChildren().add(notCorrectChoice);
+                    });
                 }
             }
         }
@@ -319,12 +362,10 @@ public class PlayerController{
          * @param character
          *              Character implementation of {@link Character}
          */
-        void checkNewMagicPoint(Character character){
+        private void checkNewMagicPoint(Character character){
             while (character.getMagicPoint() != 0){
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("You have " + character.getMagicPoint())));
-//                System.out.println(character.getMagicPoint());
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("You can upgrade your skills " + (MagicStyle.getMagicStyle(character)) + " by index...")));
-//                System.out.println("You can upgrade your skills " + (MagicStyle.getMagicStyle(character)) + " by index...");
+                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: You have " + character.getMagicPoint())));
+                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: You can upgrade your skills " + (MagicStyle.getMagicStyle(character)) + " by index...")));
                 while (!canTakeMessage){
                     System.out.print("");
                 }
@@ -337,12 +378,13 @@ public class PlayerController{
                         character.setMagicPoint(character.getMagicPoint()-1);
                         Integer finalC = c;
                         Platform.runLater(() -> messageBox.getChildren().add(new Text(MagicStyle.getMagicStyle(character).get(finalC) + " was upgraded")));
-//                        System.out.println(MagicStyle.getMagicStyle(character).get(c) + " was upgraded");
                         break;
-                    } else Platform.runLater(() -> messageBox.getChildren().add(new Text("This magic not upgradable, make another choice...")));
-//                        System.out.println("This magic not upgradable, make another choice...");
-                } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Wrong value....")));
-//                    System.out.println("Wrong value...");
+                    } else Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: This magic not upgradable, make another choice...")));
+                } else Platform.runLater(() -> {
+                    Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                    notCorrectChoice.setFill(Color.RED);
+                    messageBox.getChildren().add(notCorrectChoice);
+                });
             }
         }
 
@@ -354,10 +396,14 @@ public class PlayerController{
          * @param monster
          *          Monster implementation of {@link Monster}
          */
-        void useMagic(Character character, Monster monster){
+        private void useMagic(Character character, Monster monster){
             ArrayList<Magic> magics = MagicStyle.getMagicStyle(character);
-            Platform.runLater(() -> messageBox.getChildren().add(new Text("Select magic: " + magics)));
-//            System.out.println("Select magic: " + magics);
+            Platform.runLater(() -> {
+                Text viewSelectMagic = new Text("   info: Select magic: " + magics);
+                updateChoiceBox("1", "2", "3");
+                viewSelectMagic.setFill(Color.BLUE);
+                messageBox.getChildren().add(viewSelectMagic);
+            });
             while (true) {
                 while (!canTakeMessage){
                     System.out.print("");
@@ -371,17 +417,23 @@ public class PlayerController{
                         if (magic.getMagicClass().equals(MagicClasses.COMBAT)){
                             monster.setDebuff(magic);
                             monster.setHitPoint(monster.getHitPoint() - monster.applyDamage(character.getMagic(magic)));
+                            updateScreen(character);
                             break;
                         } else if (magic.getMagicClass().equals(MagicClasses.HEALING)){
                             character.setHitPoint(character.getHitPoint() + character.getMagic(magic));
+                            updateScreen(character);
                             break;
                         } else {
                             character.getMagic(magic);
+                            updateScreen(character);
                         }
-                        updateScreen();
+                        updateScreen(character);
                     }
-                } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make the correct choice....")));
-//                    System.out.println("Pls, enter correct index");
+                } else Platform.runLater(() -> {
+                    Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                    notCorrectChoice.setFill(Color.RED);
+                    messageBox.getChildren().add(notCorrectChoice);
+                });
             }
         }
 
@@ -395,18 +447,21 @@ public class PlayerController{
          * @return
          *          String result of walking
          */
-        String walking(Character character){
+        private String walking(Character character){
             while (character.getInventory().size() < ((character.getLevel()+1)*10)) {
                 character.experienceDrop(0.0000001);
                 if (random.nextInt(10000000) == 999999) {
                     HealingItems item = itemsList.get(random.nextInt(sizeOfItems));
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("I found " + item)));
-//                        System.out.println("I found " + item);
+                    Platform.runLater(() -> {
+                        Text viewFoundedInfo = new Text("   info: I found " + item);
+                        viewFoundedInfo.setFill(Color.GREEN);
+                        messageBox.getChildren().add(viewFoundedInfo);
+                    });
                     character.getInventory().add(item);
+                    updateScreen(character);
                 }
-//                if (character.getInventory().size() > ((character.getLevel()+1)*10)) break;
             }
-            return "The walk is over. Your stats: " + character;
+            return "The walk is over";
         }
 
         /**
@@ -417,13 +472,15 @@ public class PlayerController{
          * @param monster
          *          Monster implementation of {@link Monster}
          */
-        void punch(Character character, Monster monster){
-            Platform.runLater(() -> messageBox.getChildren().add(new Text(monster.toString())));
-//            System.out.println(monster);
+        private void punch(Character character, Monster monster){
             monster.setHitPoint((monster.getHitPoint() - monster.applyDamage(character.getDamage())));
             character.setHitPoint((character.getHitPoint() - character.applyDamage(monster.getDamageForBattle())));
-            Platform.runLater(() -> messageBox.getChildren().add(new Text(monster.toString())));
-//            System.out.println(monster);
+            Platform.runLater(() -> {
+                Text monsterInfo = new Text("   info: " + monster.toString());
+                monsterInfo.setFill(Color.ORANGERED);
+                messageBox.getChildren().add(monsterInfo);
+            });
+            updateScreen(character);
         }
 
         /**
@@ -435,7 +492,7 @@ public class PlayerController{
          * @return
          *          boolean result of healHitPoint
          */
-        boolean autoHeal(Character character) {
+        private boolean autoHeal(Character character) {
 
             if (character.checkHitPointBottle()){
                 return character.healHitPoint();
@@ -467,9 +524,12 @@ public class PlayerController{
          * @return
          *          boolean result of using item
          */
-        boolean useItem(Character character) {
-            Platform.runLater(() -> messageBox.getChildren().add(new Text("Use your items? " + character.getInventory() + "\nPls, select by index....")));
-//            System.out.println("Use your items? " + character.getInventory() + "\nPls, select by index....");
+        private boolean useItem(Character character) {
+            Platform.runLater(() -> {
+                Text viewUsingItems = new Text("   info: Use your items? " + character.getInventory() + "\nPls, select by index....");
+                viewUsingItems.setFill(Color.GREEN);
+                messageBox.getChildren().add(viewUsingItems);
+            });
             while (!canTakeMessage){
                 System.out.print("");
             }
@@ -481,8 +541,11 @@ public class PlayerController{
                 ((UsingItems) character).use(character.getInventory().get(position));
                 return true;
             } else {
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("Item not found")));
-//                System.out.println("Item not found");
+                Platform.runLater(() -> {
+                    Text itemNotFound = new Text("   info: Item not found");
+                    itemNotFound.setFill(Color.DARKRED);
+                    messageBox.getChildren().add(itemNotFound);
+                });
                 return false;
             }
         }
@@ -504,10 +567,9 @@ public class PlayerController{
          * @param mode
          *              boolean mode for drop items
          */
-        void endEvent(Character character, Monster monster, boolean mode){
+        private void endEvent(Character character, Monster monster, boolean mode){
             if (character.getHitPoint() <= 0) {
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("YOU ARE DEAD")));
-//                System.err.println("YOU ARE DEAD");
+                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: YOU ARE DEAD")));
                 exit();
             } else if (monster.getHitPoint() <= 0) {
                 drop(character, monster, mode);
@@ -528,7 +590,7 @@ public class PlayerController{
          * @return
          *              boolean result
          */
-        boolean drop(Character character, Monster monster, boolean autoDrop) {
+        private boolean drop(Character character, Monster monster, boolean autoDrop) {
 
             if (autoDrop){
                 character.experienceDrop(monster.getExperience());
@@ -538,23 +600,23 @@ public class PlayerController{
                 for (Map.Entry<EquipmentItems, Item> entry : droppedEquipment.entrySet()) {
                     ((Equipment) character).equip(entry.getValue());
                 }
+                updateScreen(character);
                 return true;
             }
 
             else{
                 if (!Objects.equals(monster.getDroppedItems(), null)){
                     Map<EquipmentItems, Item> droppedEquipment = monster.getDroppedItems();
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("You have found " + monster.getDroppedGold() + "G")));
-//                    System.out.println("You have found " + monster.getDroppedGold() + "G");
                     character.setGold(character.getGold() + monster.getDroppedGold());
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("Your equipment " + ((Equipment) character).showEquipment())));
-//                    System.out.println("Your equipment " + ((Equipment) character).showEquipment());
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, choose equipment or equip all....")));
-//                    System.out.println("Pls, choose equipment or equip all....");
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text(droppedEquipment.toString())));
-//                    System.out.println(droppedEquipment);
-                    Platform.runLater(() -> messageBox.getChildren().add(new Text("Equip all, or manual?")));
-//                    System.out.println("Equip all, or manual?");
+                    Platform.runLater(() -> {
+                        Text droppedGold = new Text("   info: You have found " + monster.getDroppedGold() + "G");
+                        droppedGold.setFill(Color.BROWN);
+                        messageBox.getChildren().add(droppedGold);
+                        Text viewDroppedEquipment = new Text("   info: You have found: " + droppedEquipment.toString());
+                        viewDroppedEquipment.setFill(Color.BLUE);
+                        messageBox.getChildren().add(viewDroppedEquipment);
+                        messageBox.getChildren().add(new Text("   info: Equip all, or manual?"));
+                    });
                     String equipAll;
                     while (true){
                         while (!canTakeMessage){
@@ -563,23 +625,23 @@ public class PlayerController{
                         equipAll = getChoice();
                         if (Objects.equals(equipAll, "equip all")){
                             for (Map.Entry<EquipmentItems, Item> entry : droppedEquipment.entrySet()) {
-                                Platform.runLater(() -> messageBox.getChildren().add(new Text(entry + " equipped")));
                                 ((Equipment) character).equip(entry.getValue());
                             }
+                            updateScreen(character);
                             break;
                         } else if (Objects.equals(equipAll, "manual")){
                             break;
-                        } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make the correct choice....")));
-//                            System.out.println("Pls, make correct choice....");
+                        } else Platform.runLater(() -> {
+                            Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                            notCorrectChoice.setFill(Color.RED);
+                            messageBox.getChildren().add(notCorrectChoice);
+                        });
                     }
 
                     if (Objects.equals(equipAll, "manual"))
                         while (true){
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Your equipment " + ((Equipment) character).showEquipment())));
-//                            System.out.println("Your equipment " + ((Equipment) character).showEquipment());
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, choose equipment....")));
-//                            System.out.println("Pls, choose equipment....");
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text(droppedEquipment.toString())));
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, choose equipment....")));
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info:" + droppedEquipment.toString())));
                             System.out.println(droppedEquipment);
                             String key;
                             List <String> list = Arrays.asList("HEAD", "HANDS", "LEGS", "ARMOR");
@@ -589,13 +651,12 @@ public class PlayerController{
                                 }
                                 key = getChoice();
                                 if (list.contains(key)) break;
-                                else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, enter another key....")));
-//                                    System.out.println("Pls, enter another key....");
+                                else Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, enter another key....")));
                             }
                             ((Equipment) character).equip(droppedEquipment.get(EquipmentItems.valueOf(key)));
+                            updateScreen(character);
                             droppedEquipment.remove((EquipmentItems.valueOf(key)));
-                            Platform.runLater(() -> messageBox.getChildren().add(new Text("Equip more?")));
-//                            System.out.println("Equip more?");
+                            Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Equip more?")));
                             while (!canTakeMessage){
                                 System.out.print("");
                             }
@@ -604,8 +665,11 @@ public class PlayerController{
                         }
                 }
                 character.experienceDrop(monster.getExperience());
-                Platform.runLater(() -> messageBox.getChildren().add(new Text("You can add to your inventory " + monster.getInventory())));
-//                System.out.println("You can add to your inventory " + monster.getInventory());
+                Platform.runLater(() -> {
+                    Text viewFoundedHealingItems = new Text("   info: You can add to your inventory " + monster.getInventory());
+                    viewFoundedHealingItems.setFill(Color.GREEN);
+                    messageBox.getChildren().add(viewFoundedHealingItems);
+                });
                 while (true) {
                     while (!canTakeMessage){
                         System.out.print("");
@@ -613,9 +677,13 @@ public class PlayerController{
                     String s = getChoice();
                     if (Objects.equals(s, "add")) {
                         ((UsingItems) character).add(monster.getInventory().pollLast());
+                        updateScreen(character);
                         break;
-                    } else Platform.runLater(() -> messageBox.getChildren().add(new Text("Pls, make the correct choice....")));
-//                        System.out.println("Pls, make the correct choice....");
+                    } else Platform.runLater(() -> {
+                        Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                        notCorrectChoice.setFill(Color.RED);
+                        messageBox.getChildren().add(notCorrectChoice);
+                    });
                 }
                 return true;
             }
@@ -630,7 +698,7 @@ public class PlayerController{
          *          New implementation of {@link Monster} with incremented character level
          *
          */
-        Monster spawn(Character character) {
+        private Monster spawn(Character character) {
             int chance = random.nextInt(100);
             if (character.getLevel()%25 == 0) return Boss.monsterFactory.createNewMonster(character);
             else if ((chance > 0)&&(chance < 25)) return MediumBot.monsterFactory.createNewMonster(character);
@@ -640,18 +708,64 @@ public class PlayerController{
         /**
          * End of game
          */
-        void exit(){
-            System.out.println("\nGAME OVER\n");
-            System.exit(0);
+        private void exit(){
+            Platform.runLater(() -> {
+                Text game_over = new Text("   info: GAME OVER");
+                game_over.setFill(Color.RED);
+                messageBox.getChildren().add(game_over);
+                inputMessageArea.setDisable(true);
+            });
+            while (true){
+                System.out.print("");
+            }
         }
 
-        private void updateScreen(){
+        private void updateScreen(Character character){
             Platform.runLater(() -> {
+                viewLevel.setText("LVL: " + character.getLevel());
                 viewName.setText("NAME: " + character.getName());
                 viewHitPoint.setText("HP: " + character.getHitPoint());
                 viewManaPoint.setText("MP: " + character.getManaPoint());
                 viewGold.setText("GOLD: " + character.getGold());
+
             });
+            if (!character.getInventory().isEmpty()){
+                Platform.runLater(() -> itemBox.getChildren().clear());
+                for (HealingItems healingItem :
+                        character.getInventory()) {
+                    Text viewHealingItem = new Text(healingItem.toString());
+                    if (healingItem.getHealingItemClass().equals(HealingItemsList.BigHPBottle) || healingItem.getHealingItemClass().equals(HealingItemsList.MiddleHPBottle) || healingItem.getHealingItemClass().equals(HealingItemsList.SmallHPBottle)) viewHealingItem.setFill(Color.INDIGO);
+                    else viewHealingItem.setFill(Color.BLUE);
+                    Platform.runLater(() -> itemBox.getChildren().add(viewHealingItem)
+                    );
+                }
+            }
+
+            if (!((Equipment)character).showEquipment().isEmpty()){
+                Platform.runLater(() -> equipmentBox.getChildren().clear());
+                for (Map.Entry<EquipmentItems, Item> entry :
+                        ((Equipment) character).showEquipment().entrySet()) {
+                    Platform.runLater(() -> equipmentBox.getChildren().add(new Text(entry.getKey() + ": " + entry.getValue())));
+                }
+            }
+        }
+
+        private void updateChoiceBox(String... choice){
+            Platform.runLater(() -> {
+                currentChoiceBox.getChildren().clear();
+                Text title = new Text("Current:");
+                title.setFill(Color.BLACK);
+                title.setFont(Font.font("Ubuntu", 18));
+                currentChoiceBox.getChildren().add(title);
+            });
+            for (String s :
+                    choice) {
+                Platform.runLater(() -> {
+                    Text current = new Text(s);
+                    current.setFont(Font.font("Ubuntu",14));
+                    currentChoiceBox.getChildren().add(current);
+                });
+            }
         }
 
     }
@@ -660,6 +774,7 @@ public class PlayerController{
     public void initialize(){
         Text text = new Text("Hello from new world implementation!" + "\nPls, choice your hero: archer, berserk, wizard....");
         messageBox.getChildren().add(text);
+        messageBoxScrollPane.vvalueProperty().bind(messageBox.heightProperty());
     }
 
     private String getChoice(){
@@ -676,17 +791,19 @@ public class PlayerController{
             if (Objects.equals(message, "archer")) {
                 Character character = Archer.characterFactory.createNewCharacter();
                 launch(character);
+                firstTime = false;
             } else if (Objects.equals(message, "berserk")){
                 Character character = Berserk.characterFactory.createNewCharacter();
                 launch(character);
+                firstTime = false;
             } else if (Objects.equals(message, "wizard")){
                 Character character = Wizard.characterFactory.createNewCharacter();
                 launch(character);
+                firstTime = false;
             } else {
                 Text sendingMessage = new Text("Wrong choice.... Pls, enter archer, berserk or wizard...");
                 messageBox.getChildren().add(sendingMessage);
             }
-            firstTime = false;
         } else {
             canTakeMessage = true;
             choice = message;

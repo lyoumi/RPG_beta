@@ -37,7 +37,7 @@ public class Archer implements Character, UsingItems, Equipment{
     private int agility = 22;
     private int intelligence = 13;
     private int power = 11;
-    private double experience = 0;
+    private double experience;
     private int level = 1;
     private int baseDamage = getAgility()*getMultiplierAgility();
     private int hitPoint = getPower()*getMultiplierPower();
@@ -48,13 +48,13 @@ public class Archer implements Character, UsingItems, Equipment{
     private Armor armor;
     private int defence;
     private Magic magic;
-    private int magicPoint = 0;
+    private int magicPoint;
     private final int multiplierAgility = 2;
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 6;
     private int expToNextLevel = 3000;
-    private int gold = 0;
-    private int count = 0;
+    private int gold;
+    private int count;
     private BuffMagic buffMagic;
 
     private Archer(){
