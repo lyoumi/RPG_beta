@@ -47,6 +47,11 @@
                   <Font name="Ubuntu Bold" size="13.0" />
                </font>
             </Text>
+            <Text fx:id="viewExp" fontSmoothingType="LCD" layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exp last: ">
+               <font>
+                  <Font name="Ubuntu Bold" size="13.0" />
+               </font>
+            </Text>
             <Text fx:id="viewHitPoint" fill="#f50000" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="HP:">
                <font>
                   <Font name="Ubuntu Bold" size="18.0" />

@@ -187,4 +187,6 @@ public interface Character {
      *          boolean result.
      */
     boolean checkManaPointBottle();
+
+    double expToNextLevel();
 }

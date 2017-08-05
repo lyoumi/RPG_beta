@@ -87,7 +87,7 @@ public class Berserk implements Character, UsingItems, Equipment {
         changeLevel();
     }
 
-    private double expToNextLevel() {
+    public double expToNextLevel() {
         return (expToNextLevel - getExperience());
     }
 

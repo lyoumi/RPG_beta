@@ -33,6 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import javax.print.attribute.IntegerSyntax;
 import java.io.IOException;
 import java.util.*;
 
@@ -48,6 +49,7 @@ public class PlayerController{
 
     public Text viewName;
     public Text viewLevel;
+    public Text viewExp;
     public Text viewHitPoint;
     public Text viewManaPoint;
     public Text viewGold;
@@ -241,10 +243,6 @@ public class PlayerController{
                             updateScreen(character);
                             punch(character, monster);
                             if (monster.isDead()) break;
-//                            if (monster instanceof Boss) {
-//                                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
-//                                System.out.println(character);
-//                            }
                         } while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
                         updateScreen(character);
                         endEvent(character, monster, true);
@@ -287,19 +285,23 @@ public class PlayerController{
                             while (!canTakeMessage){
                                 System.out.print("");
                             }
-                            int id = Integer.valueOf(getChoice());
-                            if (trader.getPriceListEquipmentObjects().containsKey(id)){
-                                if (character.getGold() >= trader.getPriceListEquipmentObjects().get(id).getPrice()){
-                                    character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
-                                    ((Equipment) character).equip(trader.getEquipmentItem(id));
-                                    updateScreen(character);
-                                } else Platform.runLater(() -> {
-                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
-                                    viewNotEnoughOfMoney.setFill(Color.RED);
-                                    messageBox.getChildren().add(viewNotEnoughOfMoney);
-                                });
-                                break;
-                            } else if (id == 0) break;
+                            String stringId = getChoice();
+                            int id;
+                            if (isDigit(stringId)) {
+                                id = Integer.valueOf(stringId);
+                                if (trader.getPriceListEquipmentObjects().containsKey(id)){
+                                    if (character.getGold() >= trader.getPriceListEquipmentObjects().get(id).getPrice()){
+                                        character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
+                                        ((Equipment) character).equip(trader.getEquipmentItem(id));
+                                        updateScreen(character);
+                                    } else Platform.runLater(() -> {
+                                        Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
+                                        viewNotEnoughOfMoney.setFill(Color.RED);
+                                        messageBox.getChildren().add(viewNotEnoughOfMoney);
+                                    });
+                                    break;
+                                } else if (id == 0) break;
+                            }
                             else Platform.runLater(() -> {
                                     Text notCorrectId = new Text("   info: Pls, enter correct id....");
                                     notCorrectId.setFill(Color.RED);
@@ -319,25 +321,45 @@ public class PlayerController{
                             while (!canTakeMessage){
                                 System.out.print("");
                             }
-                            int id = Integer.valueOf(getChoice());
-                            if (trader.getPriceListHealingObjects().containsKey(id)){
-                                updateChoiceBox("count");
-                                Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Enter count....")));
-                                while (!canTakeMessage){
-                                    System.out.print("");
-                                }
-                                int count = Integer.valueOf(getChoice());
-                                if (character.getGold() >= trader.getPriceListHealingObjects().get(id).getPrice()*count){
-                                    character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
-                                    ((UsingItems) character).addAll(trader.getHealItems(count, (id)));
-                                    updateScreen(character);
-                                } else Platform.runLater(() -> {
-                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
-                                    viewNotEnoughOfMoney.setFill(Color.RED);
-                                    messageBox.getChildren().add(viewNotEnoughOfMoney);
-                                });
-                                break;
-                            } else if (id == 0) break;
+                            String stringId = getChoice();
+                            Integer id;
+                            if (isDigit(stringId)){
+                                id = Integer.valueOf(getChoice());
+                                System.out.println(id);
+                                if (trader.getPriceListHealingObjects().containsKey(id)){
+                                    updateChoiceBox("count");
+                                    Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Enter count....")));
+                                    while (true){
+                                        while (!canTakeMessage){
+                                            System.out.print("");
+                                        }
+                                        String stringValue = getChoice();
+                                        int count;
+                                        if (isDigit(stringValue)){
+                                            count = Integer.valueOf(getChoice());
+                                            if (character.getGold() >= trader.getPriceListHealingObjects().get(id).getPrice()*count){
+                                                character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
+                                                ((UsingItems) character).addAll(trader.getHealItems(count, (id)));
+                                                updateScreen(character);
+                                                break;
+                                            } else {
+                                                Platform.runLater(() -> {
+                                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
+                                                    viewNotEnoughOfMoney.setFill(Color.RED);
+                                                    messageBox.getChildren().add(viewNotEnoughOfMoney);
+                                                });
+                                                break;
+                                            }
+                                        } else Platform.runLater(() -> {
+                                            Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                                            notCorrectChoice.setFill(Color.RED);
+                                            messageBox.getChildren().add(notCorrectChoice);
+                                        });
+
+                                    }
+                                    break;
+                                } else if (id == 0) break;
+                            }
                             else Platform.runLater(() -> {
                                     Text notCorrectId = new Text("   info: Pls, enter correct id....");
                                     notCorrectId.setFill(Color.RED);
@@ -619,6 +641,7 @@ public class PlayerController{
                     });
                     String equipAll;
                     while (true){
+                        updateChoiceBox(" equip all", " manual");
                         while (!canTakeMessage){
                             System.out.print("");
                         }
@@ -645,6 +668,7 @@ public class PlayerController{
                             System.out.println(droppedEquipment);
                             String key;
                             List <String> list = Arrays.asList("HEAD", "HANDS", "LEGS", "ARMOR");
+                            updateChoiceBox(" HEAD", " HANDS", " LEGS", " ARMOR");
                             while (true){
                                 while (!canTakeMessage){
                                     System.out.print("");
@@ -671,15 +695,17 @@ public class PlayerController{
                     messageBox.getChildren().add(viewFoundedHealingItems);
                 });
                 while (true) {
+                    updateChoiceBox(" add", " skip");
                     while (!canTakeMessage){
                         System.out.print("");
                     }
-                    String s = getChoice();
-                    if (Objects.equals(s, "add")) {
+                    String choice = getChoice();
+                    if (Objects.equals(choice, "add")) {
                         ((UsingItems) character).add(monster.getInventory().pollLast());
                         updateScreen(character);
                         break;
-                    } else Platform.runLater(() -> {
+                    } else if(Objects. equals(choice, "skip")) break;
+                    else Platform.runLater(() -> {
                         Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
                         notCorrectChoice.setFill(Color.RED);
                         messageBox.getChildren().add(notCorrectChoice);
@@ -724,6 +750,7 @@ public class PlayerController{
             Platform.runLater(() -> {
                 viewLevel.setText("LVL: " + character.getLevel());
                 viewName.setText("NAME: " + character.getName());
+                viewExp.setText(String.valueOf(character.expToNextLevel()));
                 viewHitPoint.setText("HP: " + character.getHitPoint());
                 viewManaPoint.setText("MP: " + character.getManaPoint());
                 viewGold.setText("GOLD: " + character.getGold());
@@ -765,6 +792,15 @@ public class PlayerController{
                     current.setFont(Font.font("Ubuntu",14));
                     currentChoiceBox.getChildren().add(current);
                 });
+            }
+        }
+
+        private boolean isDigit(String s) throws NumberFormatException {
+            try {
+                Integer.parseInt(s);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
             }
         }
 

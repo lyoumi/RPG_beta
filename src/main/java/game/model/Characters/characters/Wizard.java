@@ -87,7 +87,7 @@ public class Wizard implements Character, Equipment, UsingItems {
         changeLevel();
     }
 
-    private double expToNextLevel() {
+    public double expToNextLevel() {
         return (expToNextLevel - getExperience());
     }
 
