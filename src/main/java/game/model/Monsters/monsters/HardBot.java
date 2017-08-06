@@ -160,7 +160,7 @@ public class HardBot implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return MediumBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
+        return HardBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
     }
 
     @Override

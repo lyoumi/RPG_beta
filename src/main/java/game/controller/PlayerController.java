@@ -29,10 +29,13 @@ import game.model.abilities.magicStyle.MagicStyle;
 import game.model.traders.Trader;
 import game.model.traders.traders.SimpleTrader;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -1011,6 +1014,13 @@ public class PlayerController{
         Text text = new Text("Hello from new world implementation!" + "\nPls, choice your hero: archer, berserk, wizard....");
         messageBox.getChildren().add(text);
         messageBoxScrollPane.vvalueProperty().bind(messageBox.heightProperty());
+
+        inputMessageArea.setOnKeyPressed(ke -> {
+            if (ke.getCode().equals(KeyCode.ENTER))
+            {
+                listening();
+            }
+        });
     }
 
     private String getChoice(){
@@ -1043,8 +1053,10 @@ public class PlayerController{
         } else {
             canTakeMessage = true;
             choice = message;
+            Platform.runLater(() -> inputMessageArea.clear());
         }
     }
+
 
     private void launch(Character character){
         InnerPlayerControllerClass pc = new InnerPlayerControllerClass();
