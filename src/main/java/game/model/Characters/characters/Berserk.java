@@ -57,6 +57,10 @@ public class Berserk implements Character, UsingItems, Equipment {
     private int count;
     private BuffMagic buffMagic;
 
+    private int additionPower;
+    private int additionIntelligence;
+    private int additionAgility;
+
     private Berserk(){
         List<CharacterNames> names = Collections.unmodifiableList(Arrays.asList(CharacterNames.values()));
         this.name = names.get(random.nextInt(names.size())).toString();
@@ -94,7 +98,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
-            expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
+            expToNextLevel = expToNextLevel * getLevel() * 2;
             setMagicPoint(getMagicPoint() + 1);
             setAgility(getAgility()+1);
             setIntelligence(getIntelligence()+1);
@@ -105,7 +109,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     }
 
     private int getAgility() {
-        return agility + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.agility);
+        return agility + getAdditionAgility() + getBuffEffect(BuffClasses.agility);
     }
 
     private void setAgility(int agility) {
@@ -113,7 +117,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     }
 
     private int getIntelligence() {
-        return intelligence + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.intelligence);
+        return intelligence + getAdditionIntelligence() + getBuffEffect(BuffClasses.intelligence);
     }
 
     private void setIntelligence(int intelligence) {
@@ -121,7 +125,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     }
 
     private int getPower() {
-        return power + getSummaryAdditionParam(BuffClasses.power) + getBuffEffect(BuffClasses.power);
+        return power + getAdditionPower() + getBuffEffect(BuffClasses.power);
     }
 
     private void setPower(int power) {
@@ -160,7 +164,34 @@ public class Berserk implements Character, UsingItems, Equipment {
         return summaryAdditionParam;
     }
 
+    private void setAdditionPower(){
+        additionPower = getSummaryAdditionParam(BuffClasses.power);
+    }
+
+    private void setAdditionIntelligence(){
+        additionIntelligence = getSummaryAdditionParam(BuffClasses.intelligence);
+    }
+
+    private void setAdditionAgility(){
+        additionAgility = getSummaryAdditionParam(BuffClasses.agility);
+    }
+
+    private int getAdditionPower() {
+        return additionPower;
+    }
+
+    private int getAdditionIntelligence() {
+        return additionIntelligence;
+    }
+
+    private int getAdditionAgility() {
+        return additionAgility;
+    }
+
     private void updateStats(){
+        setAdditionAgility();
+        setAdditionIntelligence();
+        setAdditionPower();
         setHitPoint(getPower()*getMultiplierPower());
         setDamage(getAgility()*getMultiplierPower());
         setManaPoint(getAgility()*getMultiplierIntelligence());
@@ -249,6 +280,25 @@ public class Berserk implements Character, UsingItems, Equipment {
         } else return 0;
     }
 
+    private int checkCountHealHitPoint(){
+        int count = 0;
+        ArrayList<HealingItems> healingItems = getInventory();
+        for (HealingItems item :
+                healingItems) {
+            if (item instanceof HealingHitPointItems) count++;
+        }
+        return count;
+    }
+
+    private int checkCountManaPointBottle(){
+        int count = 0;
+        ArrayList<HealingItems> healingItems = getInventory();
+        for (HealingItems item :
+                healingItems) {
+            if (item instanceof HealingManaPointItems) count++;
+        }
+        return count;
+    }
     @Override
     public void setManaPoint(int mana) {
         if (mana > getMaxManaPoint()) this.mana = getMaxManaPoint();
@@ -359,7 +409,15 @@ public class Berserk implements Character, UsingItems, Equipment {
 
     @Override
     public boolean add(HealingItems item) {
-        if (getInventory().size() < 100) return inventory.add(item);
+        if (getInventory().size() < 100) {
+            if (item instanceof HealingManaPointItems){
+                if (checkCountManaPointBottle() < 50) return inventory.add(item);
+                else return false;
+            } else if (item instanceof  HealingHitPointItems){
+                if (checkCountHealHitPoint() < 50) return inventory.add(item);
+                else return false;
+            } else return false;
+        }
         else {
             try {
                 item.finalize();

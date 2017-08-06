@@ -57,6 +57,10 @@ public class Archer implements Character, UsingItems, Equipment{
     private int count;
     private BuffMagic buffMagic;
 
+    private int additionPower;
+    private int additionIntelligence;
+    private int additionAgility;
+
     private Archer(){
         List<CharacterNames> names = Collections.unmodifiableList(Arrays.asList(CharacterNames.values()));
         this.name = names.get(random.nextInt(names.size())).toString();
@@ -94,7 +98,7 @@ public class Archer implements Character, UsingItems, Equipment{
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
-            expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
+            expToNextLevel = (int) (expToNextLevel * getLevel() * 2);
             setMagicPoint(getMagicPoint() + 1);
             setAgility(getAgility()+3);
             setIntelligence(getIntelligence()+2);
@@ -105,7 +109,7 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private int getAgility() {
-        return agility + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.agility);
+        return agility + getAdditionAgility() + getBuffEffect(BuffClasses.agility);
     }
 
     private void setAgility(int agility) {
@@ -113,7 +117,7 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private int getIntelligence() {
-        return intelligence + getSummaryAdditionParam(BuffClasses.intelligence) + getBuffEffect(BuffClasses.intelligence);
+        return intelligence + getAdditionIntelligence() + getBuffEffect(BuffClasses.intelligence);
     }
 
     private void setIntelligence(int intelligence) {
@@ -125,7 +129,7 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private int getPower() {
-        return power + getSummaryAdditionParam(BuffClasses.power) + getBuffEffect(BuffClasses.power);
+        return power + getAdditionPower() + getBuffEffect(BuffClasses.power);
     }
 
     private void setPower(int power) {
@@ -164,7 +168,36 @@ public class Archer implements Character, UsingItems, Equipment{
         return summaryAdditionParam;
     }
 
+
+    private void setAdditionPower(){
+        additionPower = getSummaryAdditionParam(BuffClasses.power);
+    }
+
+    private void setAdditionIntelligence(){
+        additionIntelligence = getSummaryAdditionParam(BuffClasses.intelligence);
+    }
+
+    private void setAdditionAgility(){
+        additionAgility = getSummaryAdditionParam(BuffClasses.agility);
+    }
+
+    private int getAdditionPower() {
+        return additionPower;
+    }
+
+    private int getAdditionIntelligence() {
+        return additionIntelligence;
+    }
+
+    private int getAdditionAgility() {
+        return additionAgility;
+    }
+
+
     private void updateStats(){
+        setAdditionAgility();
+        setAdditionIntelligence();
+        setAdditionPower();
         setHitPoint(getPower()*getMultiplierPower());
         setDamage(getAgility()*getMultiplierAgility());
         setManaPoint(getAgility()*getMultiplierIntelligence());
@@ -259,7 +292,7 @@ public class Archer implements Character, UsingItems, Equipment{
         return count;
     }
 
-    public int checkCountManaPointBottle(){
+    private int checkCountManaPointBottle(){
         int count = 0;
         ArrayList<HealingItems> healingItems = getInventory();
         for (HealingItems item :

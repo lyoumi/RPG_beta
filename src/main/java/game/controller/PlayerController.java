@@ -1,6 +1,5 @@
 package game.controller;
 
-import com.sun.jndi.ldap.Ber;
 import game.model.Characters.Character;
 import game.model.Characters.characters.Archer;
 import game.model.Characters.characters.Berserk;
@@ -10,7 +9,6 @@ import game.model.Items.EquipmentItems;
 import game.model.Items.UsingItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
-import game.model.Items.items.heal.HealingItemsList;
 import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
 import game.model.Items.items.heal.healHitPoint.items.MiddleHPBottle;
 import game.model.Items.items.heal.healHitPoint.items.SmallHPBottle;
@@ -21,6 +19,7 @@ import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.Monsters.monsters.EasyBot;
 import game.model.Monsters.monsters.Boss;
+import game.model.Monsters.monsters.HardBot;
 import game.model.Monsters.monsters.MediumBot;
 import game.model.abilities.Magic;
 import game.model.abilities.MagicClasses;
@@ -219,6 +218,7 @@ public class PlayerController{
          */
         private void autoBattle(Character character){
             updateChoiceBox(" break");
+            battle:
             while (!Objects.equals(getChoice(), "break")){
                 if (character.getInventory().size() < 5) {
                     Platform.runLater(() -> {
@@ -235,6 +235,11 @@ public class PlayerController{
                 } else{
                     if (random.nextInt(10000000) == 9999999){
                         Monster monster = spawn(character);
+                        if (monster instanceof Boss){
+                            while (character.getHitPoint() < character.getMaxHitPoint()){
+                                if(!autoHeal(character)) break battle;
+                            }
+                        }
                         Text boss = new Text("   info: battle began with " + monster.toString());
                         boss.setFill(Color.ORANGERED);
                         Platform.runLater(() -> {
@@ -565,19 +570,55 @@ public class PlayerController{
          */
         private boolean useItem(Character character) {
             Platform.runLater(() -> {
-                Text viewUsingItems = new Text("   info: Use your items? " + character.getInventory() + "\nPls, select by index....");
+
+                Text viewUsingItems = new Text("   info: Use your items? " +
+                        "BigHitPointBottle: " + getCountOfBigHitPointBottles(character) +
+                        "; MiddleHitPointBottle: " + getCountOfMiddleHitPointBottles(character) +
+                        "; SmallHitPointBottle: " +getCountOfSmallHitPointBottles(character) +
+                        ";\n        BigFlower: " + getCountOfBigFlowers(character) +
+                        "; MiddleFlower: " + getCountOfMiddleFlowers(character) +
+                        "; SmallFlower: " +getCountSmallFlowers(character) + "\n   info: Pls, select by index....");
                 viewUsingItems.setFill(Color.GREEN);
                 messageBox.getChildren().add(viewUsingItems);
             });
             while (!canTakeMessage){
                 System.out.print("");
             }
-            int position = Integer.valueOf(getChoice());
-            position = --position;
-            if (character.getInventory().contains(character.getInventory().get(position))){
-                int finalPosition = position;
-                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.getInventory().get(finalPosition).toString())));
-                ((UsingItems) character).use(character.getInventory().get(position));
+            String choice = getChoice();
+            int position = 0;
+            while (true){
+                if (isDigit(choice)){
+                    position = Integer.valueOf(getChoice());
+                    break;
+                } else Platform.runLater(() -> {
+                    Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
+                    notCorrectChoice.setFill(Color.RED);
+                    messageBox.getChildren().add(new Text());
+                });
+            }
+
+            if (position == 1){
+                ((UsingItems) character).use(getBigHitPointBottle(character));
+                updateScreen(character);
+                return true;
+            } else if (position == 2){
+                ((UsingItems) character).use(getMiddleHitPointBottle(character));
+                updateScreen(character);
+                return true;
+            } else if (position == 3){
+                ((UsingItems) character).use(getSmallHitPointBottle(character));
+                updateScreen(character);
+                return true;
+            } else if (position == 4){
+                ((UsingItems) character).use(getBigFlower(character));
+                updateScreen(character);
+                return true;
+            } else if (position == 5){
+                ((UsingItems) character).use(getMiddleFlower(character));
+                updateScreen(character);
+                return true;
+            } else if (position == 6){
+                ((UsingItems) character).use(getSmallFlower(character));
                 updateScreen(character);
                 return true;
             } else {
@@ -748,9 +789,23 @@ public class PlayerController{
          */
         private Monster spawn(Character character) {
             int chance = random.nextInt(100);
-            if (character.getLevel()%3 == 0) return Boss.monsterFactory.createNewMonster(character);
-            else if ((chance > 0)&&(chance < 25)) return MediumBot.monsterFactory.createNewMonster(character);
-            else return EasyBot.monsterFactory.createNewMonster(character);
+            Monster newMonster;
+            if (character.getLevel()%3 == 0) {
+                newMonster = Boss.monsterFactory.createNewMonster(character);
+            } else if (character.getLevel() < 5 ){
+                if ((chance > 0)&&(chance < 25)) {
+                    newMonster = MediumBot.monsterFactory.createNewMonster(character);
+                } else {
+                    newMonster = EasyBot.monsterFactory.createNewMonster(character);
+                }
+            } else {
+                if ((chance > 0)&&(chance < 25)){
+                    newMonster = HardBot.monsterFactory.createNewMonster(character);
+                } else {
+                    newMonster = MediumBot.monsterFactory.createNewMonster(character);
+                }
+            }
+            return newMonster;
         }
 
         /**
@@ -768,7 +823,62 @@ public class PlayerController{
             }
         }
 
-        private int getBigHitPointBottles(Character character){
+
+        private HealingItems getBigHitPointBottle(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof BigHPBottle) bottle = item;
+            }
+            return bottle;
+        }
+
+        private HealingItems getMiddleHitPointBottle(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof MiddleHPBottle) bottle = item;
+            }
+            return bottle;
+        }
+
+        private HealingItems getSmallHitPointBottle(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof SmallHPBottle) bottle = item;
+            }
+            return bottle;
+        }
+
+        private HealingItems getBigFlower(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof BigFlower) bottle = item;
+            }
+            return bottle;
+        }
+
+        private HealingItems getMiddleFlower(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof MiddleFlower) bottle = item;
+            }
+            return bottle;
+        }
+
+        private HealingItems getSmallFlower(Character character){
+            HealingItems bottle = null;
+            for (HealingItems item:
+                 character.getInventory()) {
+                if (item instanceof SmallFlower) bottle = item;
+            }
+            return bottle;
+        }
+
+        private int getCountOfBigHitPointBottles(Character character){
             int count = 0;
             for (HealingItems item :
                 character.getInventory() ) {
@@ -777,7 +887,7 @@ public class PlayerController{
             return count;
         }
 
-        private int getMiddleHitPointBottles(Character character){
+        private int getCountOfMiddleHitPointBottles(Character character){
             int count = 0;
             for (HealingItems item :
                     character.getInventory() ) {
@@ -786,7 +896,7 @@ public class PlayerController{
             return count;
         }
 
-        private int getSmallHitPointBottles(Character character){
+        private int getCountOfSmallHitPointBottles(Character character){
             int count = 0;
             for (HealingItems item :
                     character.getInventory() ) {
@@ -795,7 +905,7 @@ public class PlayerController{
             return count;
         }
 
-        private int getBigFlowers(Character character){
+        private int getCountOfBigFlowers(Character character){
             int count = 0;
             for (HealingItems item :
                     character.getInventory() ) {
@@ -804,7 +914,7 @@ public class PlayerController{
             return count;
         }
 
-        private int getMiddleFlowers(Character character){
+        private int getCountOfMiddleFlowers(Character character){
             int count = 0;
             for (HealingItems item :
                     character.getInventory() ) {
@@ -813,7 +923,7 @@ public class PlayerController{
             return count;
         }
 
-        private int getSmallFlowers(Character character){
+        private int getCountSmallFlowers(Character character){
             int count = 0;
             for (HealingItems item :
                     character.getInventory() ) {
@@ -837,17 +947,17 @@ public class PlayerController{
             if (!character.getInventory().isEmpty()){
                 Platform.runLater(() -> {
                     itemBox.getChildren().clear();
-                    Text viewHealingBigHitPointBottles = new Text("BigHPBottles: " + getBigHitPointBottles(character));
+                    Text viewHealingBigHitPointBottles = new Text("BigHPBottles: " + getCountOfBigHitPointBottles(character));
                     viewHealingBigHitPointBottles.setFill(Color.INDIGO);
-                    Text viewHealingMiddleHitPointBottles = new Text("MiddleHPBottles: " + getMiddleHitPointBottles(character));
+                    Text viewHealingMiddleHitPointBottles = new Text("MiddleHPBottles: " + getCountOfMiddleHitPointBottles(character));
                     viewHealingMiddleHitPointBottles.setFill(Color.INDIGO);
-                    Text viewHealingSmallHitPointBottles = new Text("SmallHPBottles: " + getSmallHitPointBottles(character));
+                    Text viewHealingSmallHitPointBottles = new Text("SmallHPBottles: " + getCountOfSmallHitPointBottles(character));
                     viewHealingSmallHitPointBottles.setFill(Color.INDIGO);
-                    Text viewHealingBigFlowers = new Text("BigFlowers: " + getBigFlowers(character));
+                    Text viewHealingBigFlowers = new Text("BigFlowers: " + getCountOfBigFlowers(character));
                     viewHealingBigFlowers.setFill(Color.BLUE);
-                    Text viewHealingMiddleFlowers = new Text("MiddleFlowers: " + getMiddleFlowers(character));
+                    Text viewHealingMiddleFlowers = new Text("MiddleFlowers: " + getCountOfMiddleFlowers(character));
                     viewHealingMiddleFlowers.setFill(Color.BLUE);
-                    Text viewHealingSmallFlowers = new Text("SmallFlowers: " + getSmallFlowers(character));
+                    Text viewHealingSmallFlowers = new Text("SmallFlowers: " + getCountSmallFlowers(character));
                     viewHealingSmallFlowers.setFill(Color.BLUE);
 
                     itemBox.getChildren().add(viewHealingBigHitPointBottles);

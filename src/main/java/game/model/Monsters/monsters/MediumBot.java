@@ -44,7 +44,7 @@ public class MediumBot implements Monster {
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        experience = character.getLevel()*1000;
+        experience = character.getLevel()*1000 * 5;
         hitPoint = (level)*70;
         damage = (level)*20;
         setEquipmentOfDemon(character);

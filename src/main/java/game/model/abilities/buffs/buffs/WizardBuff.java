@@ -34,6 +34,11 @@ public class WizardBuff  implements BuffMagic{
     }
 
     @Override
+    public void setLevel() {
+
+    }
+
+    @Override
     public int getManaCost() {
         return 0;
     }

@@ -34,6 +34,11 @@ public class DragonForm implements BuffMagic {
     }
 
     @Override
+    public void setLevel() {
+
+    }
+
+    @Override
     public int getManaCost() {
         return manaCost;
     }

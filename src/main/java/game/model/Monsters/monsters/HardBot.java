@@ -5,6 +5,8 @@ import game.model.Characters.characters.Berserk;
 import game.model.Items.EquipmentItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
+import game.model.Items.items.armors.Armor;
+import game.model.Items.items.weapons.Weapons;
 import game.model.Monsters.Monster;
 import game.model.Monsters.MonsterFactory;
 import game.model.Monsters.MonsterNames;
@@ -14,17 +16,15 @@ import game.model.abilities.debuffs.DebuffMagic;
 import game.model.abilities.debuffs.debuffs.damage.BurningJoe;
 import game.model.abilities.debuffs.debuffs.disable.Chains;
 import game.model.abilities.instants.instants.InstantMagic;
+import game.model.abilities.instants.instants.combat.FireBall;
 
 import java.util.*;
 
-/**
- * Created by pikachu on 13.07.17.
- */
-public class EasyBot implements Monster {
+public class HardBot implements Monster {
 
-    private static Random random = new Random();
-    private static int sizeOfItems;
+    private static final Random random = new Random();
     private static List<HealingItems> itemsList;
+    private static int sizeOfItems;
 
     private int level;
     private Character character;
@@ -32,29 +32,28 @@ public class EasyBot implements Monster {
     private int damage;
     private int hitPoint;
     private LinkedList<HealingItems> inventory = new LinkedList<>();
-    private Map<EquipmentItems, Item> equipmentOfDemon;
 
     private final int experience;
-    private final int gold = 50;
+    private final int gold = 1000;
     private final String name;
+
+    private Map<EquipmentItems, Item> equipmentOfDemon;
 
     private DebuffMagic debuffMagic;
 
-
-    private EasyBot(Character character){
+    private HardBot(Character character){
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        hitPoint = level *35;
-        damage = level *10;
-        experience = character.getLevel()*100 * 3;
+        experience = character.getLevel()*1000 * 5;
+        hitPoint = (level)*150;
+        damage = (level)*50;
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
-        List<MonsterNames> names = Collections.unmodifiableList(Arrays.asList(MonsterNames.values()));
-        this.name = names.get(random.nextInt(names.size())).toString();
+        List<MonsterNames> monsterNames = Collections.unmodifiableList(Arrays.asList(MonsterNames.values()));
+        this.name = monsterNames.get(random.nextInt(monsterNames.size())).toString();
     }
-
 
     private void setEquipmentOfDemon(Character character) {
         this.equipmentOfDemon = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initEquipment(character);
@@ -70,16 +69,24 @@ public class EasyBot implements Monster {
 
     @Override
     public int getDamageForBattle() {
+        Weapons weapon = (Weapons)equipmentOfDemon.get(EquipmentItems.HANDS);
         if (isBuffed() && Objects.equals(debuffMagic.getClass().getSimpleName(), "Chains")){
             int turn = debuffMagic.getTimeOfAction();
             System.out.println(turn);
             if (turn > 0){
                 System.out.println("He's in ice!");
                 return 0;
-            }else return damage;
-        }
-        else return damage;
+            }else return damage + weapon.getDamage() + getMagicDamage();
+        } else return damage + weapon.getDamage() + getMagicDamage();
 
+    }
+
+    private int getMagicDamage(){
+        boolean chance = random.nextBoolean();
+        if (chance){
+            FireBall fireBall = (FireBall) FireBall.magicFactory.getMagicFactory(character.getLevel());
+            return fireBall.getDamage();
+        } else return 0;
     }
 
     private int getDamage(){
@@ -89,14 +96,25 @@ public class EasyBot implements Monster {
     @Override
     public int applyDamage(int applyDamage) {
         if (isBuffed() && debuffMagic.getClass().getSimpleName().contentEquals("BurningJoe")){
-                int turn = debuffMagic.getTimeOfAction();
-                System.out.println(turn);
-                if (turn > 0){
-                    System.out.println("He's in flame!");
-                    return applyDamage + debuffMagic.getDamage();
-                }else return applyDamage;
+            int turn = debuffMagic.getTimeOfAction();
+            System.out.println(turn);
+            if (turn > 0){
+                System.out.println("He's in flame!");
+                return applyDamage + debuffMagic.getDamage() - getDefence();
+            }else return applyDamage - getDefence();
         }
-        else return applyDamage;
+        else return applyDamage - getDefence();
+    }
+
+    private int getDefence() {
+        int defence = 0;
+        for (Map.Entry<EquipmentItems, Item> entry :
+                equipmentOfDemon.entrySet()) {
+            if (!entry.getValue().EQUIPMENT_ITEMS().equals(EquipmentItems.HANDS)) {
+                defence += ((Armor) entry.getValue()).getDefence();
+            }
+        }
+        return defence;
     }
 
     @Override
@@ -142,7 +160,7 @@ public class EasyBot implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return EasyBot.class.getSimpleName() + " " +getName() + ": " +  "Damage: " + getDamage() + "; HP: " + getHitPoint();
+        return MediumBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
     }
 
     @Override
@@ -150,5 +168,5 @@ public class EasyBot implements Monster {
         super.finalize();
     }
 
-    public static MonsterFactory monsterFactory = EasyBot::new;
+    public static MonsterFactory monsterFactory = HardBot::new;
 }

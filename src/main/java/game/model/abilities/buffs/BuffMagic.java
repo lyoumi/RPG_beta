@@ -27,6 +27,8 @@ public interface BuffMagic extends Magic{
     @Override
     int getLevel();
 
+    void setLevel();
+
     /**
      * Метод, который возвращает ману, требуемую на выполнение заклинания
      *
