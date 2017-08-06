@@ -11,6 +11,12 @@ import game.model.Items.UsingItems;
 import game.model.Items.items.HealingItems;
 import game.model.Items.items.Item;
 import game.model.Items.items.heal.HealingItemsList;
+import game.model.Items.items.heal.healHitPoint.items.BigHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.MiddleHPBottle;
+import game.model.Items.items.heal.healHitPoint.items.SmallHPBottle;
+import game.model.Items.items.heal.healManaPoint.items.BigFlower;
+import game.model.Items.items.heal.healManaPoint.items.MiddleFlower;
+import game.model.Items.items.heal.healManaPoint.items.SmallFlower;
 import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
 import game.model.Monsters.monsters.EasyBot;
@@ -33,8 +39,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import javax.print.attribute.IntegerSyntax;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -43,6 +47,7 @@ import java.util.*;
 public class PlayerController{
 
     public boolean canTakeMessage;
+    public Text viewAttack;
 
     private boolean firstTime = true;
     private String choice;
@@ -89,8 +94,6 @@ public class PlayerController{
          */
         private synchronized void beginGame(Character character){
 
-            System.out.println(character);
-
             while (true) {
                 Monster monster = spawn(character);
                 String monsterInfo = "\n   info: Battle began with " + monster;
@@ -114,7 +117,6 @@ public class PlayerController{
          */
         private boolean nextChoice(Character character){
             Text choice = new Text("\n   info: What's next: use item for healHitPoint, walking for find new items, \n   auto-battle for check your fortune, market for go to shop, \n   stop for break adventures or continue....\n");
-//            System.out.println("What's next: use item for healHitPoint, walking for find new items, auto-battle for check your fortune, market for go to shop stop for break adventures or continue....");
             choice:
             while (true) {
                 updateChoiceBox(" use item", " walking", " auto-battle", " market", " stop", " continue");
@@ -131,7 +133,6 @@ public class PlayerController{
                         String endOfWalk = walking(character);
                         Text resultOfWalking = new Text(endOfWalk);
                         Platform.runLater(() -> messageBox.getChildren().add(resultOfWalking));
-                        System.out.println(endOfWalk);
                         break;
                     case "auto-battle":
                         autoBattle(character);
@@ -168,8 +169,8 @@ public class PlayerController{
                 updateScreen(character);
                 punch(character, monster);
                 updateScreen(character);
-                if (monster.isDead()) return "   info: The manualBattle is over";
-//                Platform.runLater(() -> messageBox.getChildren().add(new Text(character.toString())));
+                if (monster.isDead()) return "   The manualBattle is over";
+                if (character.getHitPoint() <= 0) exit();
                 Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Choose next turn: use item for healHitPoint, use magic for addition damage, leave battle for alive or continue....")));
                 choice:
                 while (true){
@@ -200,6 +201,11 @@ public class PlayerController{
                 }
             }while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
             updateScreen(character);
+            try {
+                finalize();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
             return "";
         }
 
@@ -212,8 +218,8 @@ public class PlayerController{
          *          Character implementation of {@link Character}
          */
         private void autoBattle(Character character){
-            updateChoiceBox(" break auto-battle");
-            while (!Objects.equals(getChoice(), "break auto-battle")){
+            updateChoiceBox(" break");
+            while (!Objects.equals(getChoice(), "break")){
                 if (character.getInventory().size() < 5) {
                     Platform.runLater(() -> {
                         Text walkingBeginning = new Text("   info: I need go walk.... Pls, wait some time, I will be back\n" + character.toString());
@@ -221,18 +227,17 @@ public class PlayerController{
                         messageBox.getChildren().add(walkingBeginning);
                     });
                     String walkingResults = walking(character);
+                    Text viewWalkingResult = new Text(walkingResults);
+                    viewWalkingResult.setFill(Color.DARKBLUE);
                     Platform.runLater(() -> {
-                        Text viewWalkingResult = new Text(walkingResults);
-                        viewWalkingResult.setFill(Color.DARKBLUE);
                         messageBox.getChildren().add(viewWalkingResult);
                     });
                 } else{
                     if (random.nextInt(10000000) == 9999999){
-                        System.out.println("\n");
                         Monster monster = spawn(character);
+                        Text boss = new Text("   info: battle began with " + monster.toString());
+                        boss.setFill(Color.ORANGERED);
                         Platform.runLater(() -> {
-                            Text boss = new Text("   info: battle began with " + monster.toString());
-                            boss.setFill(Color.ORANGERED);
                             messageBox.getChildren().add(boss);
                         });
                         do {
@@ -243,10 +248,23 @@ public class PlayerController{
                             updateScreen(character);
                             punch(character, monster);
                             if (monster.isDead()) break;
-                        } while ((character.getHitPoint() > 0) && (monster.getHitPoint() > 0));
+                            else {
+                                Text monsterInfo = new Text("   info: " + monster.toString());
+                                monsterInfo.setFill(Color.ORANGERED);
+                                Platform.runLater(() -> {
+                                    messageBox.getChildren().add(monsterInfo);
+                                });
+                            }
+                            if (character.getHitPoint() == 0) exit();
+                        } while (true);
                         updateScreen(character);
                         endEvent(character, monster, true);
                         checkNewMagicPoint(character);
+                        try {
+                            monster.finalize();
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
                     }
                 }
             }
@@ -262,10 +280,10 @@ public class PlayerController{
             Trader trader = SimpleTrader.tradersFactory.getTrader(character);
             market:
             while(true){
+                updateChoiceBox(" equipment", " items", " exit");
+                Text viewWelcomeSpeech = new Text("\n   info: Hello my friend! Look at my priceList: enter equipment, items or exit for exit from market....");
+                viewWelcomeSpeech.setFill(Color.BLUEVIOLET);
                 Platform.runLater(() -> {
-                    updateChoiceBox(" equipment", " healHitPoint", " exit");
-                    Text viewWelcomeSpeech = new Text("\n   info: Hello my friend! Look at my priceList: enter equipment, healHitPoint or exit for exit from market....");
-                    viewWelcomeSpeech.setFill(Color.BLUEVIOLET);
                     messageBox.getChildren().add(viewWelcomeSpeech);
                 });
                 while (!canTakeMessage){
@@ -310,7 +328,7 @@ public class PlayerController{
                         }
                         break;
                     }
-                    case "healHitPoint":{
+                    case "items":{
                         for (Map.Entry<Integer, HealingItems> entry :
                                 trader.getPriceListHealingObjects().entrySet()){
                             Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Price: " + entry.getValue().getPrice() + "G - " + "id: " + entry.getKey() + "; " + entry.getValue())));
@@ -325,7 +343,6 @@ public class PlayerController{
                             Integer id;
                             if (isDigit(stringId)){
                                 id = Integer.valueOf(getChoice());
-                                System.out.println(id);
                                 if (trader.getPriceListHealingObjects().containsKey(id)){
                                     updateChoiceBox("count");
                                     Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Enter count....")));
@@ -338,7 +355,7 @@ public class PlayerController{
                                         if (isDigit(stringValue)){
                                             count = Integer.valueOf(getChoice());
                                             if (character.getGold() >= trader.getPriceListHealingObjects().get(id).getPrice()*count){
-                                                character.setGold(character.getGold()-trader.getPriceListEquipmentObjects().get(id).getPrice());
+                                                character.setGold(character.getGold()-(trader.getPriceListHealingObjects().get(id).getPrice()*count));
                                                 ((UsingItems) character).addAll(trader.getHealItems(count, (id)));
                                                 updateScreen(character);
                                                 break;
@@ -400,6 +417,11 @@ public class PlayerController{
                         character.setMagicPoint(character.getMagicPoint()-1);
                         Integer finalC = c;
                         Platform.runLater(() -> messageBox.getChildren().add(new Text(MagicStyle.getMagicStyle(character).get(finalC) + " was upgraded")));
+                        try {
+                            finalize();
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
                         break;
                     } else Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: This magic not upgradable, make another choice...")));
                 } else Platform.runLater(() -> {
@@ -420,10 +442,10 @@ public class PlayerController{
          */
         private void useMagic(Character character, Monster monster){
             ArrayList<Magic> magics = MagicStyle.getMagicStyle(character);
+            Text viewSelectMagic = new Text("   info: Select magic: " + magics);
+            updateChoiceBox("1", "2", "3");
+            viewSelectMagic.setFill(Color.BLUE);
             Platform.runLater(() -> {
-                Text viewSelectMagic = new Text("   info: Select magic: " + magics);
-                updateChoiceBox("1", "2", "3");
-                viewSelectMagic.setFill(Color.BLUE);
                 messageBox.getChildren().add(viewSelectMagic);
             });
             while (true) {
@@ -448,8 +470,8 @@ public class PlayerController{
                         } else {
                             character.getMagic(magic);
                             updateScreen(character);
+                            break;
                         }
-                        updateScreen(character);
                     }
                 } else Platform.runLater(() -> {
                     Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
@@ -497,11 +519,6 @@ public class PlayerController{
         private void punch(Character character, Monster monster){
             monster.setHitPoint((monster.getHitPoint() - monster.applyDamage(character.getDamage())));
             character.setHitPoint((character.getHitPoint() - character.applyDamage(monster.getDamageForBattle())));
-            Platform.runLater(() -> {
-                Text monsterInfo = new Text("   info: " + monster.toString());
-                monsterInfo.setFill(Color.ORANGERED);
-                messageBox.getChildren().add(monsterInfo);
-            });
             updateScreen(character);
         }
 
@@ -561,6 +578,7 @@ public class PlayerController{
                 int finalPosition = position;
                 Platform.runLater(() -> messageBox.getChildren().add(new Text(character.getInventory().get(finalPosition).toString())));
                 ((UsingItems) character).use(character.getInventory().get(position));
+                updateScreen(character);
                 return true;
             } else {
                 Platform.runLater(() -> {
@@ -623,6 +641,11 @@ public class PlayerController{
                     ((Equipment) character).equip(entry.getValue());
                 }
                 updateScreen(character);
+                try {
+                    finalize();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
                 return true;
             }
 
@@ -665,7 +688,6 @@ public class PlayerController{
                         while (true){
                             Platform.runLater(() -> messageBox.getChildren().add(new Text("   info: Pls, choose equipment....")));
                             Platform.runLater(() -> messageBox.getChildren().add(new Text("   info:" + droppedEquipment.toString())));
-                            System.out.println(droppedEquipment);
                             String key;
                             List <String> list = Arrays.asList("HEAD", "HANDS", "LEGS", "ARMOR");
                             updateChoiceBox(" HEAD", " HANDS", " LEGS", " ARMOR");
@@ -726,7 +748,7 @@ public class PlayerController{
          */
         private Monster spawn(Character character) {
             int chance = random.nextInt(100);
-            if (character.getLevel()%25 == 0) return Boss.monsterFactory.createNewMonster(character);
+            if (character.getLevel()%3 == 0) return Boss.monsterFactory.createNewMonster(character);
             else if ((chance > 0)&&(chance < 25)) return MediumBot.monsterFactory.createNewMonster(character);
             else return EasyBot.monsterFactory.createNewMonster(character);
         }
@@ -746,26 +768,95 @@ public class PlayerController{
             }
         }
 
-        private void updateScreen(Character character){
+        private int getBigHitPointBottles(Character character){
+            int count = 0;
+            for (HealingItems item :
+                character.getInventory() ) {
+                if (item instanceof BigHPBottle) count++;
+            }
+            return count;
+        }
+
+        private int getMiddleHitPointBottles(Character character){
+            int count = 0;
+            for (HealingItems item :
+                    character.getInventory() ) {
+                if (item instanceof MiddleHPBottle) count++;
+            }
+            return count;
+        }
+
+        private int getSmallHitPointBottles(Character character){
+            int count = 0;
+            for (HealingItems item :
+                    character.getInventory() ) {
+                if (item instanceof SmallHPBottle) count++;
+            }
+            return count;
+        }
+
+        private int getBigFlowers(Character character){
+            int count = 0;
+            for (HealingItems item :
+                    character.getInventory() ) {
+                if (item instanceof BigFlower) count++;
+            }
+            return count;
+        }
+
+        private int getMiddleFlowers(Character character){
+            int count = 0;
+            for (HealingItems item :
+                    character.getInventory() ) {
+                if (item instanceof MiddleFlower) count++;
+            }
+            return count;
+        }
+
+        private int getSmallFlowers(Character character){
+            int count = 0;
+            for (HealingItems item :
+                    character.getInventory() ) {
+                if (item instanceof SmallFlower) count++;
+            }
+            return count;
+        }
+
+        private synchronized void updateScreen(Character character){
             Platform.runLater(() -> {
                 viewLevel.setText("LVL: " + character.getLevel());
                 viewName.setText("NAME: " + character.getName());
-                viewExp.setText("Exp last: " + String.valueOf((int)character.expToNextLevel()));
+                viewExp.setText("Experience to next level:\n" + String.valueOf((int)character.expToNextLevel()));
                 viewHitPoint.setText("HP: " + character.getHitPoint());
                 viewManaPoint.setText("MP: " + character.getManaPoint());
+                viewAttack.setText("ATK: " + character.getDamage());
                 viewGold.setText("GOLD: " + character.getGold());
 
             });
+
             if (!character.getInventory().isEmpty()){
-                Platform.runLater(() -> itemBox.getChildren().clear());
-                for (HealingItems healingItem :
-                        character.getInventory()) {
-                    Text viewHealingItem = new Text(healingItem.toString());
-                    if (healingItem.getHealingItemClass().equals(HealingItemsList.BigHPBottle) || healingItem.getHealingItemClass().equals(HealingItemsList.MiddleHPBottle) || healingItem.getHealingItemClass().equals(HealingItemsList.SmallHPBottle)) viewHealingItem.setFill(Color.INDIGO);
-                    else viewHealingItem.setFill(Color.BLUE);
-                    Platform.runLater(() -> itemBox.getChildren().add(viewHealingItem)
-                    );
-                }
+                Platform.runLater(() -> {
+                    itemBox.getChildren().clear();
+                    Text viewHealingBigHitPointBottles = new Text("BigHPBottles: " + getBigHitPointBottles(character));
+                    viewHealingBigHitPointBottles.setFill(Color.INDIGO);
+                    Text viewHealingMiddleHitPointBottles = new Text("MiddleHPBottles: " + getMiddleHitPointBottles(character));
+                    viewHealingMiddleHitPointBottles.setFill(Color.INDIGO);
+                    Text viewHealingSmallHitPointBottles = new Text("SmallHPBottles: " + getSmallHitPointBottles(character));
+                    viewHealingSmallHitPointBottles.setFill(Color.INDIGO);
+                    Text viewHealingBigFlowers = new Text("BigFlowers: " + getBigFlowers(character));
+                    viewHealingBigFlowers.setFill(Color.BLUE);
+                    Text viewHealingMiddleFlowers = new Text("MiddleFlowers: " + getMiddleFlowers(character));
+                    viewHealingMiddleFlowers.setFill(Color.BLUE);
+                    Text viewHealingSmallFlowers = new Text("SmallFlowers: " + getSmallFlowers(character));
+                    viewHealingSmallFlowers.setFill(Color.BLUE);
+
+                    itemBox.getChildren().add(viewHealingBigHitPointBottles);
+                    itemBox.getChildren().add(viewHealingMiddleHitPointBottles);
+                    itemBox.getChildren().add(viewHealingSmallHitPointBottles);
+                    itemBox.getChildren().add(viewHealingBigFlowers);
+                    itemBox.getChildren().add(viewHealingMiddleFlowers);
+                    itemBox.getChildren().add(viewHealingSmallFlowers);
+                });
             }
 
             if (!((Equipment)character).showEquipment().isEmpty()){
@@ -777,7 +868,7 @@ public class PlayerController{
             }
         }
 
-        private void updateChoiceBox(String... choice){
+        private synchronized void updateChoiceBox(String... choice){
             Platform.runLater(() -> {
                 currentChoiceBox.getChildren().clear();
                 Text title = new Text("Current:");
@@ -803,7 +894,6 @@ public class PlayerController{
                 return false;
             }
         }
-
     }
 
     @FXML

@@ -61,5 +61,10 @@ public class LegendaryBoxingGloves implements Weapons{
         return getName() + ": " + " ATK +" + getDamage();
     }
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public static ItemsFactory itemsFactory = LegendaryBoxingGloves::new;
 }

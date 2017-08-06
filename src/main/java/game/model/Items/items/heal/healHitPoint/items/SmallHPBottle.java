@@ -30,6 +30,11 @@ public class SmallHPBottle implements HealingHitPointItems {
 
     public static HealingHitPointItemsFactory healingHitPointItemsFactory = SmallHPBottle::new;
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public String toString(){
         return SmallHPBottle.class.getSimpleName();
     }

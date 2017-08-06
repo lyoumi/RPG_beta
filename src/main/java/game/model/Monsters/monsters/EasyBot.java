@@ -34,7 +34,7 @@ public class EasyBot implements Monster {
     private LinkedList<HealingItems> inventory = new LinkedList<>();
     private Map<EquipmentItems, Item> equipmentOfDemon;
 
-    private final int experience = 100;
+    private final int experience;
     private final int gold = 50;
     private final String name;
 
@@ -47,6 +47,7 @@ public class EasyBot implements Monster {
         else level = character.getLevel() + 1;
         hitPoint = level *35;
         damage = level *10;
+        experience = character.getLevel()*100;
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
@@ -141,7 +142,12 @@ public class EasyBot implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return EasyBot.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return EasyBot.class.getSimpleName() + " " +getName() + ": " +  "Damage: " + getDamage() + "; HP: " + getHitPoint();
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
     }
 
     public static MonsterFactory monsterFactory = EasyBot::new;

@@ -65,5 +65,10 @@ public class IronBoots implements Armor {
         return IronBoots.class.getSimpleName() + ": DEF +" + getDefence();
     }
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public static ItemsFactory itemsFactory = IronBoots::new;
 }

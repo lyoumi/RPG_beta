@@ -32,7 +32,7 @@ public class MediumBot implements Monster {
     private int hitPoint;
     private LinkedList<HealingItems> inventory = new LinkedList<>();
 
-    private final int experience = 1000;
+    private final int experience;
     private final int gold = 1000;
     private final String name;
 
@@ -44,6 +44,7 @@ public class MediumBot implements Monster {
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
+        experience = character.getLevel()*1000;
         hitPoint = (level)*70;
         damage = (level)*20;
         setEquipmentOfDemon(character);
@@ -158,7 +159,12 @@ public class MediumBot implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return MediumBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HitPoint: " + getHitPoint();
+        return MediumBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
     }
 
     public static MonsterFactory monsterFactory = MediumBot::new;

@@ -15,9 +15,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/interface.fxml"));
-        primaryStage.setTitle("Game of year");
+        primaryStage.setTitle("Time of Legends");
         primaryStage.setScene(new Scene(root, 800, 600));
-        primaryStage.setMinWidth(800);
+        primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(600);
         primaryStage.show();
     }

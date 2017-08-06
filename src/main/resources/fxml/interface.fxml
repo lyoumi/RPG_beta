@@ -8,11 +8,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="798.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.controller.PlayerController">
+<BorderPane maxHeight="-Infinity" maxWidth="1000.0" minHeight="-Infinity" minWidth="1000.0" prefHeight="541.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game.controller.PlayerController">
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <MenuBar prefHeight="29.0" prefWidth="792.0">
+            <MenuBar prefHeight="29.0" prefWidth="1000.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -35,7 +35,7 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="437.0" prefWidth="139.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="437.0" prefWidth="207.0" BorderPane.alignment="CENTER">
          <children>
             <Text fx:id="viewName" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="NAME:">
                <font>
@@ -47,7 +47,7 @@
                   <Font name="Ubuntu Bold" size="13.0" />
                </font>
             </Text>
-            <Text fx:id="viewExp" fontSmoothingType="LCD" layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exp last: ">
+            <Text fx:id="viewExp" fontSmoothingType="LCD" layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Experience to next level:">
                <font>
                   <Font name="Ubuntu Bold" size="13.0" />
                </font>
@@ -60,6 +60,11 @@
             <Text fx:id="viewManaPoint" fill="#3a0afa" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="MP:">
                <font>
                   <Font name="Ubuntu Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text fx:id="viewAttack" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="ATK:">
+               <font>
+                  <Font name="Ubuntu Bold" size="13.0" />
                </font>
             </Text>
             <Text fx:id="viewGold" strokeType="OUTSIDE" strokeWidth="0.0" text="GOLD:">
@@ -104,8 +109,8 @@
    <bottom>
       <HBox>
          <children>
-            <TextArea fx:id="inputMessageArea" prefHeight="67.0" prefWidth="760.0" BorderPane.alignment="CENTER" />
-            <Button fx:id="buttonSendMessage" mnemonicParsing="false" onAction="#listening" prefHeight="25.0" prefWidth="30.0" />
+            <TextArea fx:id="inputMessageArea" prefHeight="67.0" prefWidth="950.0" BorderPane.alignment="CENTER" />
+            <Button fx:id="buttonSendMessage" mnemonicParsing="false" onAction="#listening" prefHeight="25.0" prefWidth="37.0" text="OK" />
          </children>
       </HBox>
    </bottom>

@@ -30,6 +30,11 @@ public class MiddleFlower implements HealingManaPointItems{
 
     public static HealingManaPointItemsFactory healingManaPointItemsFactory = MiddleFlower::new;
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public String toString(){
         return MiddleFlower.class.getSimpleName();
     }

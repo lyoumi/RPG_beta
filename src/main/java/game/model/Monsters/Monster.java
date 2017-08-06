@@ -98,4 +98,6 @@ public interface Monster {
      *          int dropped gold
      */
     int getDroppedGold();
+
+    void finalize() throws Throwable;
 }

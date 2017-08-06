@@ -28,4 +28,6 @@ public interface HealingItems {
      *              character implementation of {@link Character}
      */
     void use(Character character);
+
+    void finalize() throws Throwable ;
 }

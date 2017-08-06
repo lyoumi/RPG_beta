@@ -61,4 +61,6 @@ public interface Weapons extends Item {
      *          price of current item.
      */
     int getPrice();
+
+    void finalize() throws Throwable;
 }

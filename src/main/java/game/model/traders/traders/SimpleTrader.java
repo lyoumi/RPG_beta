@@ -32,12 +32,12 @@ public class SimpleTrader implements Trader {
     /**
      * Мар, содержащая id предмета и предметы экипировки.
      */
-    private Map<Integer, Item> priceListEquipmentObjects;
+    private Map<Integer, Item> priceListEquipmentObjects = new LinkedHashMap<>();
 
     /**
      * Мар, содержащая id предмета и предметы для восстановления здоровья/маны.
      */
-    private Map<Integer, HealingItems> priceListHealingObjects;
+    private Map<Integer, HealingItems> priceListHealingObjects = new LinkedHashMap<>();
 
     /**
      * Объект типа {@link Character} хранящий в себе имплементацию конкретного персонажа.
@@ -52,10 +52,7 @@ public class SimpleTrader implements Trader {
      *              character implementation of {@link Character}
      */
     private SimpleTrader(Character character){
-        priceListEquipmentObjects = new LinkedHashMap<>();
-        priceListHealingObjects = new LinkedHashMap<>();
         this.character = character;
-
         generatePriceList();
     }
 

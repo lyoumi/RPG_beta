@@ -95,14 +95,11 @@ public class Wizard implements Character, Equipment, UsingItems {
         if (expToNextLevelReady()) {
             level++;
             expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
-            System.out.println("Congratulation with level: " + level);
             setMagicPoint(getMagicPoint() + 1);
-            System.out.println();
             setAgility(getAgility()+1);
             setIntelligence(getIntelligence()+4);
             setPower(getPower()+2);
             updateStats();
-            System.out.println(this);
             return true;
         } else return false;
     }
@@ -124,7 +121,6 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     private int notEnoughOfMana(){
-        System.out.println("Not enough mana!");
         return 0;
     }
 
@@ -311,7 +307,6 @@ public class Wizard implements Character, Equipment, UsingItems {
 
     @Override
     public int getDamage() {
-        if (count > 0) count--;
         if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
         else return getBaseDamage();
     }
@@ -328,6 +323,7 @@ public class Wizard implements Character, Equipment, UsingItems {
 
     @Override
     public int applyDamage(int damage)  {
+        if (count > 0) count--;
         int applyingDamage = damage - getDefence();
         if (applyingDamage < 0) return 0;
         else return applyingDamage;
@@ -362,7 +358,15 @@ public class Wizard implements Character, Equipment, UsingItems {
 
     @Override
     public boolean add(HealingItems item) {
-        return inventory.add(item);
+        if (getInventory().size() < 100) return inventory.add(item);
+        else {
+            try {
+                item.finalize();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+            return false;
+        }
     }
 
     @Override
@@ -373,8 +377,12 @@ public class Wizard implements Character, Equipment, UsingItems {
     @Override
     public void use(HealingItems item) {
         item.use(this);
-        System.out.println("\nYou are used is " + item + "\n");
         getInventory().remove(item);
+        try {
+            item.finalize();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
         getInventory().trimToSize();
     }
 
@@ -415,12 +423,16 @@ public class Wizard implements Character, Equipment, UsingItems {
             Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
                 if (weapon.getDamage() > usingWeapon.getDamage()){
-                    System.out.println(weapon.getName() + " equipped");
+                    equipmentItems.remove(weapon.EQUIPMENT_ITEMS());
+                    try {
+                        usingWeapon.finalize();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
                     equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
                     updateStats();
                 }
             } else {
-                System.out.println(weapon.getName() + " equipped");
                 equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
                 updateStats();
             }
@@ -429,15 +441,24 @@ public class Wizard implements Character, Equipment, UsingItems {
             Armor usingArmor = (Armor)equipmentItems.get(item.EQUIPMENT_ITEMS());
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
                 if (armor.getDefence() > usingArmor.getDefence()){
-                    System.out.println(armor.getName() + " equipped");
+                    equipmentItems.remove(armor.EQUIPMENT_ITEMS());
+                    try {
+                        usingArmor.finalize();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
                     equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
                     updateStats();
                 }
             } else {
-                System.out.println(armor.getName() + " equipped");
                 equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
                 updateStats();
             }
+        }
+        try {
+            finalize();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 

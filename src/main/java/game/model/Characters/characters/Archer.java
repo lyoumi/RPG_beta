@@ -95,14 +95,11 @@ public class Archer implements Character, UsingItems, Equipment{
         if (expToNextLevelReady()) {
             level++;
             expToNextLevel = (int) (expToNextLevel * getLevel() * 1.75);
-            System.out.println("Congratulation with level: " + level);
             setMagicPoint(getMagicPoint() + 1);
-            System.out.println();
             setAgility(getAgility()+3);
             setIntelligence(getIntelligence()+2);
             setPower(getPower()+2);
             updateStats();
-            System.out.println(this);
             return true;
         } else return false;
     }
@@ -124,7 +121,6 @@ public class Archer implements Character, UsingItems, Equipment{
     }
 
     private int notEnoughOfMana(){
-        System.out.println("Not enough mana!");
         return 0;
     }
 
@@ -253,6 +249,26 @@ public class Archer implements Character, UsingItems, Equipment{
         } else return 0;
     }
 
+    private int checkCountHealHitPoint(){
+        int count = 0;
+        ArrayList<HealingItems> healingItems = getInventory();
+        for (HealingItems item :
+                healingItems) {
+            if (item instanceof HealingHitPointItems) count++;
+        }
+        return count;
+    }
+
+    public int checkCountManaPointBottle(){
+        int count = 0;
+        ArrayList<HealingItems> healingItems = getInventory();
+        for (HealingItems item :
+                healingItems) {
+            if (item instanceof HealingManaPointItems) count++;
+        }
+        return count;
+    }
+
     public void setManaPoint(int mana) {
         if (mana > getMaxManaPoint()) this.mana = getMaxManaPoint();
         else this.mana = mana;
@@ -316,7 +332,6 @@ public class Archer implements Character, UsingItems, Equipment{
 
     @Override
     public int getDamage() {
-        if (count > 0) count--;
         if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
         else return getBaseDamage();
     }
@@ -328,6 +343,7 @@ public class Archer implements Character, UsingItems, Equipment{
 
     @Override
     public int applyDamage(int damage)  {
+        if (count > 0) count--;
         int applyingDamage = damage - getDefence();
         if (applyingDamage < 0) return 0;
         else return applyingDamage;
@@ -362,7 +378,23 @@ public class Archer implements Character, UsingItems, Equipment{
 
     @Override
     public boolean add(HealingItems item) {
-        return inventory.add(item);
+        if (getInventory().size() < 100) {
+            if (item instanceof HealingManaPointItems){
+                if (checkCountManaPointBottle() < 50) return inventory.add(item);
+                else return false;
+            } else if (item instanceof  HealingHitPointItems){
+                if (checkCountHealHitPoint() < 50) return inventory.add(item);
+                else return false;
+            } else return false;
+        }
+        else {
+            try {
+                item.finalize();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+            return false;
+        }
     }
 
     @Override
@@ -373,8 +405,12 @@ public class Archer implements Character, UsingItems, Equipment{
     @Override
     public void use(HealingItems item) {
         item.use(this);
-        System.out.println("\nYou are used is " + item + "\n");
         getInventory().remove(item);
+        try {
+            item.finalize();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
         getInventory().trimToSize();
     }
 
@@ -415,12 +451,16 @@ public class Archer implements Character, UsingItems, Equipment{
             Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
                 if (weapon.getDamage() > usingWeapon.getDamage()){
-                    System.out.println(weapon.getName() + " equipped");
+                    equipmentItems.remove(weapon.EQUIPMENT_ITEMS());
+                    try {
+                        usingWeapon.finalize();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
                     equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
                     updateStats();
                 }
             } else {
-                System.out.println(weapon.getName() + " equipped");
                 equipmentItems.put(weapon.EQUIPMENT_ITEMS(), weapon);
                 updateStats();
             }
@@ -429,15 +469,24 @@ public class Archer implements Character, UsingItems, Equipment{
             Armor usingArmor = (Armor)equipmentItems.get(item.EQUIPMENT_ITEMS());
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
                 if (armor.getDefence() > usingArmor.getDefence()){
-                    System.out.println(armor.getName() + " equipped");
+                    equipmentItems.remove(armor.EQUIPMENT_ITEMS());
+                    try {
+                        usingArmor.finalize();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
                     equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
                     updateStats();
                 }
             } else {
-                System.out.println(armor.getName() + " equipped");
                 equipmentItems.put(armor.EQUIPMENT_ITEMS(), armor);
                 updateStats();
             }
+        }
+        try {
+            finalize();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 

@@ -40,5 +40,9 @@ public class WindsOfWinter implements InstantMagic{
         return MagicClasses.COMBAT;
     }
 
+    public String toString(){
+        return this.getClass().getSimpleName();
+    }
+
     public static MagicFactory magicFactory = WindsOfWinter::new;
 }

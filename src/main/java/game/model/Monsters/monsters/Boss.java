@@ -40,8 +40,8 @@ public class Boss implements Monster {
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        hitPoint = (level)*500;
-        damage = (level)*100;
+        hitPoint = (level)*490;
+        damage = (level)*90;
         setEquipmentOfDevil(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
@@ -123,7 +123,12 @@ public class Boss implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return Boss.class.getSimpleName() + " " +getName() + ": " +  "; Damage: " +": HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
+        return Boss.class.getSimpleName() + " " +getName() + ": "+  "HP " + getHitPoint() + "; ATK +" + getDamageForBattle();
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
     }
 
     public static MonsterFactory monsterFactory = Boss::new;

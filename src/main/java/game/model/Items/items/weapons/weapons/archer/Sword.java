@@ -62,5 +62,10 @@ public class Sword implements Weapons {
         return Sword.class.getSimpleName() + ": ATK +" + getDamage();
     }
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public static ItemsFactory itemsFactory = Sword::new;
 }

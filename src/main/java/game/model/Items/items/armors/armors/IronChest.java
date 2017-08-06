@@ -64,5 +64,10 @@ public class IronChest implements Armor {
         return IronChest.class.getSimpleName() + ": DEF +" + getDefence();
     }
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public static ItemsFactory itemsFactory = IronChest::new;
 }

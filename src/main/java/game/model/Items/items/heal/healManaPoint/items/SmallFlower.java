@@ -30,6 +30,11 @@ public class SmallFlower implements HealingManaPointItems{
 
     public static HealingManaPointItemsFactory healingManaPointItemsFactory = SmallFlower::new;
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public String toString(){
         return SmallFlower.class.getSimpleName();
     }

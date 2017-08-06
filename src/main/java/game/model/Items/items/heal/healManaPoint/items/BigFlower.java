@@ -30,6 +30,11 @@ public class BigFlower implements HealingManaPointItems {
 
     public static HealingManaPointItemsFactory healingHitPointItemsFactory = BigFlower::new;
 
+    @Override
+    public void finalize() throws Throwable {
+        super.finalize();
+    }
+
     public String toString(){
         return BigFlower.class.getSimpleName();
     }

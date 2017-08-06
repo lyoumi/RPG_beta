@@ -56,4 +56,7 @@ public interface Armor extends Item {
      *          price of current item.
      */
     int getPrice();
+
+    void finalize() throws Throwable;
+
 }
