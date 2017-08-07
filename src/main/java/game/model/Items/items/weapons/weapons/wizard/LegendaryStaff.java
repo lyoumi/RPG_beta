@@ -20,7 +20,7 @@ public class LegendaryStaff implements Weapons{
 
     private LegendaryStaff(Character character){
         this.character = character;
-        this.itemLevel = random.nextInt(character.getLevel() + 1);
+        this.itemLevel = character.getLevel() + 5;
         this.price = 10000 * getItemLevel();
         this.damage = getItemLevel() * 8 + 5;
         this.magic = WizardBuff.magicFactory.getMagicFactory(character.getLevel());

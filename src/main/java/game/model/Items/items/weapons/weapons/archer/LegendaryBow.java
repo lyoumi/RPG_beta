@@ -22,7 +22,7 @@ public class LegendaryBow implements Weapons {
 
     private LegendaryBow(Character character){
         this.character = character;
-        this.itemLevel = random.nextInt(character.getLevel() + 1) + 5;
+        this.itemLevel = character.getLevel() + 5;
         this.damage = getItemLevel() * 9;
         this.price = 10000 * getItemLevel();
         this.buff = ArchersBuff.magicFactory.getMagicFactory(character.getLevel());

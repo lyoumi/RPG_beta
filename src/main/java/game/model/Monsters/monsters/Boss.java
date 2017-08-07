@@ -40,8 +40,16 @@ public class Boss implements Monster {
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        hitPoint = (level)*490;
-        damage = (level)*90;
+        if (character.getLevel() <= 6){
+            hitPoint = (level)*500;
+            damage = (level)*90;
+        } else if (character.getLevel() == 9){
+            hitPoint = (level)*750;
+            damage = (level)*120;
+        } else if (character.getLevel() > 9){
+            hitPoint = (level)*1000;
+            damage = (level)*150;
+        }
         setEquipmentOfDevil(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();

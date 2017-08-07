@@ -98,7 +98,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
-            expToNextLevel = (int) (expToNextLevel * getLevel() * 2);
+            expToNextLevel = expToNextLevel * 2;
             setMagicPoint(getMagicPoint() + 1);
             setAgility(getAgility()+1);
             setIntelligence(getIntelligence()+4);

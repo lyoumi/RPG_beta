@@ -98,7 +98,7 @@ public class Archer implements Character, UsingItems, Equipment{
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
-            expToNextLevel = (int) (expToNextLevel * getLevel() * 2);
+            expToNextLevel = (expToNextLevel * 2);
             setMagicPoint(getMagicPoint() + 1);
             setAgility(getAgility()+3);
             setIntelligence(getIntelligence()+2);

@@ -17,13 +17,9 @@ import game.model.Items.items.heal.healManaPoint.items.MiddleFlower;
 import game.model.Items.items.heal.healManaPoint.items.SmallFlower;
 import game.model.Monsters.Monster;
 import game.model.Monsters.equipment.equipment.SimpleMonsterEquipment;
-import game.model.Monsters.monsters.EasyBot;
-import game.model.Monsters.monsters.Boss;
-import game.model.Monsters.monsters.HardBot;
-import game.model.Monsters.monsters.MediumBot;
+import game.model.Monsters.monsters.*;
 import game.model.abilities.Magic;
 import game.model.abilities.MagicClasses;
-import game.model.abilities.instants.InstantMagic;
 import game.model.abilities.instants.instants.healing.SmallHealing;
 import game.model.abilities.magicStyle.MagicStyle;
 import game.model.traders.Trader;
@@ -47,7 +43,10 @@ import java.util.*;
  */
 public class PlayerController {
 
-    public boolean canTakeMessage;
+    private boolean firstTime = true;
+    private String choice;
+    private boolean canTakeMessage;
+
     public Text viewAttack;
     public Text caseFirst;
     public Text caseSecond;
@@ -55,9 +54,6 @@ public class PlayerController {
     public Text caseFourth;
     public Text caseFifth;
     public Text caseSixth;
-
-    private boolean firstTime = true;
-    private String choice;
 
     public Text viewName;
     public Text viewLevel;
@@ -253,13 +249,6 @@ public class PlayerController {
                             updateScreen(character);
                             punch(character, monster);
                             if (monster.isDead()) break;
-                            else {
-                                Text monsterInfo = new Text("   info: " + monster.toString());
-                                monsterInfo.setFill(Color.ORANGERED);
-                                Platform.runLater(() -> {
-                                    messageBox.getChildren().add(monsterInfo);
-                                });
-                            }
                             if (character.getHitPoint() == 0) exit();
                         } while (true);
                         updateScreen(character);
@@ -366,11 +355,10 @@ public class PlayerController {
                                                 break;
                                             } else {
                                                 Platform.runLater(() -> {
-                                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money!");
+                                                    Text viewNotEnoughOfMoney = new Text("   info: Not enough of money! Pls, enter another count....");
                                                     viewNotEnoughOfMoney.setFill(Color.RED);
                                                     messageBox.getChildren().add(viewNotEnoughOfMoney);
                                                 });
-                                                break;
                                             }
                                         } else Platform.runLater(() -> {
                                             Text notCorrectChoice = new Text("   info: Pls, make the correct choice....");
@@ -512,6 +500,9 @@ public class PlayerController {
         private void punch(Character character, Monster monster) {
             monster.setHitPoint((monster.getHitPoint() - monster.applyDamage(character.getDamage())));
             character.setHitPoint((character.getHitPoint() - character.applyDamage(monster.getDamageForBattle())));
+            Text monsterInfo = new Text("   info: " + monster.toString());
+            monsterInfo.setFill(Color.ORANGERED);
+            Platform.runLater(() -> messageBox.getChildren().add(monsterInfo));
             updateScreen(character);
         }
 
@@ -771,11 +762,17 @@ public class PlayerController {
                 } else {
                     newMonster = EasyBot.monsterFactory.createNewMonster(character);
                 }
-            } else {
+            } else if ((character.getLevel() > 4) && (character.getLevel() < 8)) {
                 if ((chance > 0) && (chance < 25)) {
                     newMonster = HardBot.monsterFactory.createNewMonster(character);
                 } else {
                     newMonster = MediumBot.monsterFactory.createNewMonster(character);
+                }
+            } else {
+                if ((chance > 0) && (chance < 25)) {
+                    newMonster = VeryHardBot.monsterFactory.createNewMonster(character);
+                } else {
+                    newMonster = HardBot.monsterFactory.createNewMonster(character);
                 }
             }
             return newMonster;
@@ -1021,7 +1018,9 @@ public class PlayerController {
         messageBoxScrollPane.vvalueProperty().bind(messageBox.heightProperty());
         inputMessageArea.setOnKeyPressed(ke -> {
             if (ke.getCode().equals(KeyCode.ENTER)) {
-                listening();
+                Platform.runLater(() -> messageBox.requestFocus());
+                Platform.runLater(() -> inputMessageArea.requestFocus());
+                buttonSendMessage.fire();
             }
         });
     }

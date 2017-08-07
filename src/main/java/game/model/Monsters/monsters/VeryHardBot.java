@@ -20,7 +20,7 @@ import game.model.abilities.instants.instants.combat.FireBall;
 
 import java.util.*;
 
-public class HardBot implements Monster {
+public class VeryHardBot implements Monster {
 
     private static final Random random = new Random();
     private static List<HealingItems> itemsList;
@@ -41,13 +41,13 @@ public class HardBot implements Monster {
 
     private DebuffMagic debuffMagic;
 
-    private HardBot(Character character){
+    private VeryHardBot(Character character){
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        experience = character.getLevel()*300;
-        hitPoint = (level)*250;
-        damage = (level)*50;
+        experience = character.getLevel()*700;
+        hitPoint = (level)*400;
+        damage = (level)*100;
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();
@@ -160,7 +160,7 @@ public class HardBot implements Monster {
     private String getName(){return name;}
 
     public String toString(){
-        return HardBot.class.getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
+        return this.getClass().getSimpleName() + " " + getName() + ": Damage: " + getDamage() + "; HP: " + getHitPoint();
     }
 
     @Override
@@ -168,5 +168,5 @@ public class HardBot implements Monster {
         super.finalize();
     }
 
-    public static MonsterFactory monsterFactory = HardBot::new;
+    public static MonsterFactory monsterFactory = VeryHardBot::new;
 }

@@ -20,9 +20,9 @@ public class LegendaryBoxingGloves implements Weapons{
 
     private LegendaryBoxingGloves(Character character){
         this.character = character;
-        this.itemLevel = random.nextInt(character.getLevel() + 1);
+        this.itemLevel = character.getLevel() + 5;
         this.price = 10000 * getItemLevel();
-        this.damage = getItemLevel() * 6 + 5;
+        this.damage = getItemLevel() * 7 + 5;
         this.magic = BerserkBuff.magicFactory.getMagicFactory(character.getLevel());
     }
 
