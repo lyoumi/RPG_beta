@@ -11,6 +11,7 @@ import java.util.Map;
 public class ForceOfJedi implements BuffMagic{
 
     private int level;
+    private int timeOfActions = 1;
     private int manaCost;
     private int power = 5;
     private int intelligence = 7;
@@ -35,12 +36,22 @@ public class ForceOfJedi implements BuffMagic{
 
     @Override
     public void setLevel() {
-
+        timeOfActions++;
     }
 
     @Override
     public int getManaCost() {
         return manaCost;
+    }
+
+    @Override
+    public void setDamage() {
+
+    }
+
+    @Override
+    public int getTimeOfAction() {
+        return timeOfActions;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class EasyBot implements Monster {
         else level = character.getLevel() + 1;
         hitPoint = level *35;
         damage = level *10;
-        experience = character.getLevel()*100 * 3;
+        experience = character.getLevel() * 3;
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
         sizeOfItems = itemsList.size();

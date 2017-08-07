@@ -11,6 +11,7 @@ import java.util.Map;
 public class WizardBuff  implements BuffMagic{
 
     private int level;
+    private int timeOfActions = 1;
     private final int agility = 2;
     private final int power = 3;
     private final int intelligence = 5;
@@ -35,12 +36,22 @@ public class WizardBuff  implements BuffMagic{
 
     @Override
     public void setLevel() {
-
+        timeOfActions++;
     }
 
     @Override
     public int getManaCost() {
         return 0;
+    }
+
+    @Override
+    public void setDamage() {
+
+    }
+
+    @Override
+    public int getTimeOfAction() {
+        return timeOfActions;
     }
 
     @Override

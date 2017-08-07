@@ -32,6 +32,11 @@ public class BurningJoe implements DebuffMagic {
     }
 
     @Override
+    public void setDamage() {
+
+    }
+
+    @Override
     public int getDamage() {
         return damage;
     }

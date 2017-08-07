@@ -37,6 +37,11 @@ public class Chains implements DebuffMagic{
     }
 
     @Override
+    public void setDamage() {
+
+    }
+
+    @Override
     public MagicClasses getMagicClass() {
         return MagicClasses.COMBAT;
     }

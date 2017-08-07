@@ -52,7 +52,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     private final int multiplierAgility = 2;
     private final int multiplierIntelligence = 11;
     private final int multiplierPower = 5;
-    private int expToNextLevel = 3000;
+    private int expToNextLevel = 30;
     private int gold;
     private int count;
     private BuffMagic buffMagic;
@@ -270,7 +270,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     private void activateBuff(Magic magic){
         buffMagic = (BuffMagic) magic;
         updateStats();
-        count = 6;
+        count = buffMagic.getTimeOfAction();
     }
 
     private int getBuffEffect(BuffClasses buffClass){
@@ -341,7 +341,7 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     @Override
-    public int getMagic(Magic magic) {
+    public int useMagic(Magic magic) {
         if (getManaPoint() >= magic.getManaCost()) {
             if (magic.getMagicClass().equals(MagicClasses.COMBAT)) {
                 setManaPoint(getManaPoint() - magic.getManaCost());
@@ -357,14 +357,14 @@ public class Wizard implements Character, Equipment, UsingItems {
     }
 
     @Override
-    public int getDamage() {
-        if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
-        else return getBaseDamage();
+    public int getManaPoint() {
+        return mana;
     }
 
     @Override
-    public int getManaPoint() {
-        return mana;
+    public int getDamage() {
+        if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + ((Weapons)equipmentItems.get(EquipmentItems.HANDS)).getDamage();
+        else return getBaseDamage();
     }
 
     @Override
@@ -479,8 +479,8 @@ public class Wizard implements Character, Equipment, UsingItems {
     public void equip(Item item) {
         if (item.EQUIPMENT_ITEMS().equals(EquipmentItems.HANDS)){
             weapon = (Weapons) item;
-            Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
+                Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
                 if (weapon.getDamage() > usingWeapon.getDamage()){
                     equipmentItems.remove(weapon.EQUIPMENT_ITEMS());
                     try {

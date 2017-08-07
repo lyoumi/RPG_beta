@@ -21,4 +21,9 @@ public interface DebuffMagic extends Magic {
      *          int count
      */
     int getTimeOfAction();
+
+    @Override
+    default void setDamage() {
+
+    }
 }

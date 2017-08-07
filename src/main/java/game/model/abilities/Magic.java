@@ -25,6 +25,8 @@ public interface Magic {
      */
     int getManaCost();
 
+    void setDamage();
+
     /**
      * Метод, который возвращает тип заклинания из {@link MagicClasses}
      *

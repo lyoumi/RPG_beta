@@ -10,9 +10,10 @@ import java.util.Map;
 
 public class ArmorBuff implements BuffMagic {
 
+    private int level;
+    private int timeOfActions = 1;
     private final int power;
     private final int defence;
-    private int level;
 
     private ArmorBuff(int level) {
         this.power = 7;
@@ -35,12 +36,22 @@ public class ArmorBuff implements BuffMagic {
 
     @Override
     public void setLevel() {
-
+        timeOfActions++;
     }
 
     @Override
     public int getManaCost() {
         return 0;
+    }
+
+    @Override
+    public void setDamage() {
+
+    }
+
+    @Override
+    public int getTimeOfAction() {
+        return timeOfActions;
     }
 
     @Override

@@ -52,7 +52,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     private final int multiplierAgility = 3;
     private final int multiplierIntelligence = 5;
     private final int multiplierPower = 7;
-    private int expToNextLevel = 3000;
+    private int expToNextLevel = 30;
     private int gold;
     private int count;
     private BuffMagic buffMagic;
@@ -192,13 +192,18 @@ public class Berserk implements Character, UsingItems, Equipment {
         setAdditionAgility();
         setAdditionIntelligence();
         setAdditionPower();
+        setBaseDamage();
         setHitPoint(getPower()*getMultiplierPower());
         setDamage(getAgility()*getMultiplierPower());
         setManaPoint(getAgility()*getMultiplierIntelligence());
     }
 
+    private void setBaseDamage(){
+        baseDamage = getMultiplierPower()*getPower();
+    }
+
     private int getBaseDamage(){
-        return getMultiplierPower()*getPower();
+        return baseDamage;
     }
 
     private boolean isHealingBigHitPointBottle(){
@@ -270,7 +275,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     private void activateBuff(Magic magic){
         buffMagic = (BuffMagic) magic;
         updateStats();
-        count = 6;
+        count = buffMagic.getTimeOfAction();
     }
 
     private int getBuffEffect(BuffClasses buffClass){
@@ -341,7 +346,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     }
 
     @Override
-    public int getMagic(Magic magic) {
+    public int useMagic(Magic magic) {
         if (getManaPoint() >= magic.getManaCost()) {
             if (magic.getMagicClass().equals(MagicClasses.COMBAT)) {
                 setManaPoint(getManaPoint() - magic.getManaCost());
@@ -358,7 +363,9 @@ public class Berserk implements Character, UsingItems, Equipment {
 
     @Override
     public int getDamage() {
-        if (equipmentItems.containsKey(EquipmentItems.HANDS)) return getBaseDamage() + weapon.getDamage();
+        if (equipmentItems.containsKey(EquipmentItems.HANDS)) {
+            return getBaseDamage() + ((Weapons)equipmentItems.get(EquipmentItems.HANDS)).getDamage();
+        }
         else return getBaseDamage();
     }
 
@@ -479,8 +486,8 @@ public class Berserk implements Character, UsingItems, Equipment {
     public void equip(Item item) {
         if (item.EQUIPMENT_ITEMS().equals(EquipmentItems.HANDS)){
             weapon = (Weapons) item;
-            Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
             if (equipmentItems.containsKey(item.EQUIPMENT_ITEMS())){
+                Weapons usingWeapon = (Weapons) equipmentItems.get(EquipmentItems.HANDS);
                 if (weapon.getDamage() > usingWeapon.getDamage()){
                     equipmentItems.remove(weapon.EQUIPMENT_ITEMS());
                     try {

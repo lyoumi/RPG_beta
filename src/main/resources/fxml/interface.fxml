@@ -97,7 +97,44 @@
          </children></VBox>
    </left>
    <right>
-      <VBox fx:id="currentChoiceBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+      <VBox fx:id="currentChoiceBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Choice:">
+               <font>
+                  <Font name="Ubuntu Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseFirst" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseSecond" fontSmoothingType="LCD" layoutX="10.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseThird" fontSmoothingType="LCD" layoutX="10.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseFourth" layoutX="10.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseFifth" layoutX="10.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+            <Text fx:id="caseSixth" layoutX="10.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Text>
+         </children></VBox>
    </right>
    <center>
       <ScrollPane fx:id="messageBoxScrollPane" prefHeight="200.0" prefWidth="200.0" vvalue="1.0" BorderPane.alignment="CENTER">

@@ -38,6 +38,13 @@ public interface BuffMagic extends Magic{
     @Override
     int getManaCost();
 
+    @Override
+    default void setDamage() {
+
+    }
+
+    int getTimeOfAction();
+
     /**
      * Метод, который возвращает тип заклинания из {@link MagicClasses}
      *

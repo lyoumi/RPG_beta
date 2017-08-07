@@ -154,7 +154,7 @@ public interface Character {
      * @return
      *          magic damage.
      */
-    int getMagic(Magic magic);
+    int useMagic(Magic magic);
 
     /**
      * Метод, реализующий восстановление здоровья.

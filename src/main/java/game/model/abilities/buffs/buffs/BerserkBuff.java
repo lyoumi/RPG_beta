@@ -11,6 +11,7 @@ import java.util.Map;
 public class BerserkBuff implements BuffMagic{
 
     private int level;
+    private int timeOfActions = 1;
     private final int agility = 1;
     private final int power = 5;
     private final int intelligence = 2;
@@ -35,12 +36,22 @@ public class BerserkBuff implements BuffMagic{
 
     @Override
     public void setLevel() {
-
+        timeOfActions++;
     }
 
     @Override
     public int getManaCost() {
         return 0;
+    }
+
+    @Override
+    public void setDamage() {
+
+    }
+
+    @Override
+    public int getTimeOfAction() {
+        return timeOfActions;
     }
 
     @Override

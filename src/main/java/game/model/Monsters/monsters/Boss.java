@@ -32,7 +32,7 @@ public class Boss implements Monster {
 
     private Map<EquipmentItems, Item> equipmentOfDevil;
 
-    private final int experience = 100000;
+    private final int experience = 1000;
     private final int gold = 100000;
     private final String name;
 

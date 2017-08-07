@@ -45,8 +45,8 @@ public class HardBot implements Monster {
         this.character = character;
         if (character instanceof Berserk) level = character.getLevel() + 4;
         else level = character.getLevel() + 1;
-        experience = character.getLevel()*1000 * 5;
-        hitPoint = (level)*150;
+        experience = character.getLevel()*10 * 10;
+        hitPoint = (level)*250;
         damage = (level)*50;
         setEquipmentOfDemon(character);
         itemsList = SimpleMonsterEquipment.monsterEquipmentFactory.getMonsterEquipment().initializeItemList();
