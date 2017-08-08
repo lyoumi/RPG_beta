@@ -98,7 +98,7 @@ public class Berserk implements Character, UsingItems, Equipment {
     private boolean changeLevel(){
         if (expToNextLevelReady()) {
             level++;
-            expToNextLevel = expToNextLevel * 2;
+            expToNextLevel = expToNextLevel * 4;
             setMagicPoint(getMagicPoint() + 1);
             setAgility(getAgility()+1);
             setIntelligence(getIntelligence()+1);

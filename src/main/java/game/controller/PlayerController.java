@@ -105,6 +105,7 @@ public class PlayerController {
                 endEvent(character, monster, false);
                 Text resultOfBattleView = new Text("   info: " + resultOfBattle);
                 Platform.runLater(() -> messageBox.getChildren().add(resultOfBattleView));
+                checkNewMagicPoint(character);
                 nextChoice(character);
             }
         }
