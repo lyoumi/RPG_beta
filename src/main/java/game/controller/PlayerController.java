@@ -39,6 +39,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -1063,12 +1064,36 @@ public class PlayerController {
     }
 
     public void serialize(){
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("xml-file", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        String filePath = fileChooser.showSaveDialog(new Stage()).getAbsolutePath();
+        if (!Objects.equals(filePath, null)){
+            save(filePath);
+        }
+    }
+
+    public void deserialize(){
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("xml-file", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        String filePath = fileChooser.showOpenDialog(new Stage()).getAbsolutePath();
+        if (!Objects.equals(filePath, null)){
+            load(filePath);
+        }
+    }
+
+    private void save(String filePath){
         XStream xStream = new XStream();
         String xml = xStream.toXML(character);
         String data = "xml/save.xml";
         XMLEncoder encoder=null;
         try{
-            encoder=new XMLEncoder(new BufferedOutputStream(new FileOutputStream(data)));
+            encoder=new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filePath)));
         }catch(FileNotFoundException fileNotFound){
             fileNotFound.printStackTrace();
         }
@@ -1078,13 +1103,13 @@ public class PlayerController {
         }
     }
 
-    public void deserialize(){
+    public void load(String path){
         character = null;
         XStream xStream = new XStream();
         XMLDecoder decoder=null;
         String data = "xml/save.xml";
         try{
-            decoder=new XMLDecoder(new BufferedInputStream(new FileInputStream(data)));
+            decoder=new XMLDecoder(new BufferedInputStream(new FileInputStream(path)));
             String xml = decoder.readObject().toString();
             character = (Character) xStream.fromXML(xml);
         }catch(FileNotFoundException fileNotFound){

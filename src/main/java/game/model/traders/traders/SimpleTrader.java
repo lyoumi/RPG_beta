@@ -12,7 +12,7 @@ import game.model.Items.items.weapons.weapons.berserk.LegendaryBoxingGloves;
 import game.model.Items.items.weapons.weapons.wizard.LegendaryStaff;
 import game.model.traders.Trader;
 import game.model.traders.TradersFactory;
-import lib.RandomUniqueValue;
+import ext.RandomUniqueValue;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
