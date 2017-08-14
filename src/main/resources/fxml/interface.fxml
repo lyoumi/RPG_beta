@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,16 +14,13 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#exit" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" onAction="#serialize" text="Save" />
+                        <MenuItem mnemonicParsing="false" onAction="#deserialize" text="Load" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                   </items>
                 </Menu>
               </menus>
@@ -34,6 +32,11 @@
       <VBox prefHeight="437.0" prefWidth="207.0" BorderPane.alignment="CENTER">
          <children>
             <Text fx:id="viewName" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="NAME:">
+               <font>
+                  <Font name="Ubuntu Bold" size="13.0" />
+               </font>
+            </Text>
+            <Text fx:id="viewClass" fontSmoothingType="LCD" layoutX="10.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLASS:">
                <font>
                   <Font name="Ubuntu Bold" size="13.0" />
                </font>
